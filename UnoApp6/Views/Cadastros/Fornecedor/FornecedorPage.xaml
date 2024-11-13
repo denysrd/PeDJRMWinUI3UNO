@@ -1,0 +1,61 @@
+﻿<Page
+    x:Class="PeDJRMWinUI3UNO.Views.Cadastros.Fornecedor.FornecedorPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:PeDJRMWinUI3UNO.Views.Cadastros.Fornecedor"
+    xmlns:controls="using:CommunityToolkit.WinUI.UI.Controls"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    mc:Ignorable="d">
+
+    <Grid Padding="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <!-- Botão de Cadastrar -->
+            <RowDefinition Height="*"/>
+            <!-- DataGrid de fornecedores -->
+        </Grid.RowDefinitions>
+
+        <!-- Botão de Cadastrar -->
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Grid.Row="0" Margin="0,0,0,10">
+            <Button Content="Cadastrar Novo Fornecedor" Click="CadastrarButton_Click" Width="200" />
+        </StackPanel>
+
+        <!-- DataGrid de Fornecedores -->
+        <controls:DataGrid x:Name="FornecedoresDataGrid" Grid.Row="1" 
+                           AutoGenerateColumns="False"
+                           ItemsSource="{x:Bind Fornecedores, Mode=OneWay}"
+                           HeadersVisibility="Column"
+                           GridLinesVisibility="Horizontal"
+                           SelectionMode="Single"
+                           IsReadOnly="True">
+            <controls:DataGrid.Columns>
+                <controls:DataGridTextColumn Header="Nome" Binding="{Binding Nome}" Width="*" />
+                <controls:DataGridTextColumn Header="Documento" Binding="{Binding Documento}" Width="Auto" />
+                <controls:DataGridTextColumn Header="Email" Binding="{Binding Email}" Width="*" />
+                <controls:DataGridTextColumn Header="Telefone" Binding="{Binding Telefone}" Width="Auto" />
+                <!-- Coluna de Editar -->
+                <controls:DataGridTemplateColumn Header="Editar" Width="Auto">
+                    <controls:DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Button Click="EditarButton_Click" Tag="{Binding}">
+                                <SymbolIcon Symbol="Edit"/>
+                            </Button>
+                        </DataTemplate>
+                    </controls:DataGridTemplateColumn.CellTemplate>
+                </controls:DataGridTemplateColumn>
+
+                <!-- Coluna de Excluir -->
+                <controls:DataGridTemplateColumn Header="Excluir" Width="Auto">
+                    <controls:DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Button Click="ExcluirButton_Click" Tag="{Binding}">
+                                <SymbolIcon Symbol="Delete"/>
+                            </Button>
+                        </DataTemplate>
+                    </controls:DataGridTemplateColumn.CellTemplate>
+                </controls:DataGridTemplateColumn>
+            </controls:DataGrid.Columns>
+        </controls:DataGrid>
+    </Grid>
+</Page>

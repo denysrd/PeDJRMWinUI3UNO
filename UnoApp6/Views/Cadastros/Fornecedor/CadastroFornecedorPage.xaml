@@ -1,0 +1,35 @@
+﻿<Page
+    x:Class="PeDJRMWinUI3UNO.Views.Cadastros.Fornecedor.CadastroFornecedorPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:PeDJRMWinUI3UNO.Views.Cadastros.Fornecedor"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    mc:Ignorable="d">
+
+    <Grid>
+        <!-- Centraliza todo o conteúdo no centro da página -->
+        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="20">
+            <!-- Título da página -->
+            <TextBlock Text="Cadastro Fornecedor" 
+                       FontSize="24" 
+                       FontWeight="Bold" 
+                       HorizontalAlignment="Center"/>
+
+            <!-- Estrutura de campos de entrada e botões -->
+            <StackPanel Spacing="10" Width="300">
+                <TextBox x:Name="NomeTextBox" PlaceholderText="Nome" />
+                <TextBox x:Name="DocumentoTextBox" PlaceholderText="Documento (CPF/CNPJ)" TextChanged="DocumentoTextBox_TextChanged"/>
+                <TextBox x:Name="EmailTextBox" PlaceholderText="Email (Opcional)" />
+                <TextBox x:Name="TelefoneTextBox" PlaceholderText="Telefone (Opcional)" />
+                <ToggleSwitch x:Name="SituacaoToggleSwitch" OnContent="Ativo" OffContent="Inativo" />
+
+                <!-- Botões "Salvar" e "Cancelar" alinhados horizontalmente -->
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="10">
+                    <Button Content="Salvar" Click="SalvarButton_Click" Width="100"/>
+                    <Button Content="Cancelar" Click="CancelarButton_Click" Width="100"/>
+                </StackPanel>
+            </StackPanel>
+        </StackPanel>
+    </Grid>
+</Page>

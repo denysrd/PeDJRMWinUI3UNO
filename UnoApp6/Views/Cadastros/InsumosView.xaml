@@ -1,0 +1,60 @@
+﻿<Page  
+    x:Class="PeDJRMWinUI3UNO.Views.Cadastros.InsumosView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
+    xmlns:controls="using:CommunityToolkit.WinUI.UI.Controls"
+    xmlns:models="using:PeDJRMWinUI3UNO.Models"
+    xmlns:local="using:PeDJRMWinUI3UNO.Views.Cadastros"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel Padding="24" Spacing="16">
+            <TextBlock Text="Cadastro de Insumos" Style="{StaticResource TitleTextStyle}" Margin="0,0,0,16"/>
+
+            <Border BorderThickness="1" BorderBrush="Gray" Padding="16">
+                <StackPanel Spacing="12">
+                    <TextBox x:Name="NomeTextBox" Header="Nome" PlaceholderText="Digite o nome do insumo" />
+                    <TextBox x:Name="CustoTextBox" Header="Custo (R$)" PlaceholderText="Digite o custo" InputScope="CurrencyAmount"/>
+                    <ComboBox x:Name="SiglaComboBox" Header="Sigla" PlaceholderText="Selecione uma sigla"
+                              DisplayMemberPath="Sigla" SelectedValuePath="Id_Tipo_Ingrediente"
+                              SelectionChanged="AtualizarCodigoInterno"/>
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                        <ComboBox x:Name="FornecedorComboBox" Header="Fornecedor" PlaceholderText="Selecione o fornecedor"
+                                  DisplayMemberPath="Nome" SelectedValuePath="Id_Fornecedor"
+                                  SelectionChanged="AtualizarCodigoInterno"/>
+                        <TextBlock x:Name="FornecedorIdTextBlock" Text="ID" VerticalAlignment="Center" 
+                                   Margin="0,30,0,0" FontWeight="Bold"/>
+                    </StackPanel>
+                    <TextBox x:Name="CodigoFornecedorTextBox" Header="Código Produto do Fornecedor" PlaceholderText="Digite o código do produto do fornecedor" />
+                    <TextBox x:Name="CodigoInternoTextBox" Header="Código Interno" IsReadOnly="True" PlaceholderText="Gerado automaticamente" />
+                    <TextBox x:Name="DescricaoInsumoTextBox" Header="Descrição do Insumo" PlaceholderText="Digite a descrição do insumo" />
+                    <Button Content="Salvar" Click="SalvarInsumo_Click" Style="{StaticResource PrimaryButtonStyle}"/>
+                </StackPanel>
+            </Border>
+
+            <TextBlock Text="Insumos Cadastrados" Style="{StaticResource SubtitleTextStyle}" Margin="0,16,0,8"/>
+
+            <controls:DataGrid x:Name="InsumoDataGrid" AutoGenerateColumns="False" HeadersVisibility="Column"
+                               GridLinesVisibility="Horizontal" SelectionMode="Single" IsReadOnly="True"
+                               Style="{StaticResource DefaultDataGridStyle}">
+                <controls:DataGrid.Columns>
+                    <controls:DataGridTextColumn Header="Nome" Binding="{Binding Nome}"/>
+                    <controls:DataGridTextColumn Header="Código Interno" Binding="{Binding Codigo_Interno}"/>
+                    <controls:DataGridTextColumn Header="Código Produto Fornecedor" Binding="{Binding codigo_produto_fornecedor}"/>
+
+                    <!-- Coluna com botão de edição -->
+                    <controls:DataGridTemplateColumn Header="Ações">
+                        <controls:DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <Button Content="Editar" Click="EditarInsumo_Click" Tag="{Binding}" />
+                            </DataTemplate>
+                        </controls:DataGridTemplateColumn.CellTemplate>
+                    </controls:DataGridTemplateColumn>
+                </controls:DataGrid.Columns>
+            </controls:DataGrid>
+        </StackPanel>
+    </ScrollViewer>
+</Page>

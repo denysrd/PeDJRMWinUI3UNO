@@ -1,0 +1,120 @@
+﻿<Page 
+    x:Class="PeDJRMWinUI3UNO.Views.Cadastros.CadastrosAuxiliares.CadastrosAuxiliaresView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
+    xmlns:controls="using:CommunityToolkit.WinUI.UI.Controls"
+    xmlns:models="using:PeDJRMWinUI3UNO.Models"
+    xmlns:local="using:PeDJRMWinUI3UNO.Views.Cadastros.CadastrosAuxiliares"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <!-- ScrollViewer para permitir rolagem da página completa -->
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel Padding="24" Spacing="16">
+            <TextBlock Text="Cadastros Auxiliares" Style="{StaticResource TitleTextStyle}" Margin="0,0,0,16"/>
+
+            <!-- Expander com Título e Descrição no Cabeçalho -->
+            <muxc:Expander IsExpanded="False" HorizontalAlignment="Stretch" Padding="12">
+                <muxc:Expander.Header>
+                    <StackPanel>
+                        <!-- Título do Expander -->
+                        <TextBlock Text="Tipo de Ingrediente" FontSize="16" FontWeight="SemiBold"/>
+                        <!-- Descrição do Expander -->
+                        <TextBlock Text="Cadastro de tipos de ingrediente, FLA, INS, FLI, etc" 
+                                   FontSize="14" Foreground="{StaticResource TextBrush}" Margin="0,4,0,0"/>
+                    </StackPanel>
+                </muxc:Expander.Header>
+
+                <!-- Conteúdo do Expander -->
+                <StackPanel Spacing="16">
+                    <TextBlock Text="Cadastro" Style="{StaticResource SubtitleTextStyle}" Margin="0,0,0,8"/>
+                    <StackPanel Orientation="Vertical" Spacing="10" Margin="0,0,0,16">
+                        <TextBox x:Name="TipoIngredienteTextBox" Header="Tipo Ingrediente" PlaceholderText="Digite o tipo"/>
+                        <TextBox x:Name="DescricaoTipoIngredienteTextBox" Header="Descrição Tipo Ingrediente" PlaceholderText="Digite a descrição"/>
+                        <TextBox x:Name="SiglaTextBox" Header="Sigla" TextChanged="SiglaTextBox_TextChanged" PlaceholderText="Digite a sigla"/>
+                        <ToggleSwitch x:Name="SituacaoToggleSwitch" Header="Situação" OnContent="Ativo" OffContent="Inativo"/>
+                        <Button Content="Salvar" Style="{StaticResource PrimaryButtonStyle}" Click="SalvarTipoIngrediente"/>
+                    </StackPanel>
+
+                    <TextBlock Text="Tipos de Ingredientes Registrados" Style="{StaticResource SubtitleTextStyle}" Margin="0,0,0,8"/>
+                    <controls:DataGrid x:Name="ingredienteDataGrid"
+                                       AutoGenerateColumns="False"
+                                       HeadersVisibility="Column"
+                                       GridLinesVisibility="Horizontal"
+                                       SelectionMode="Single"
+                                       IsReadOnly="True"
+                                       Style="{StaticResource DefaultDataGridStyle}"
+                                       ItemsSource="{x:Bind TipoIngredientes, Mode=OneWay}">
+                        <controls:DataGrid.Columns>
+                            <controls:DataGridTextColumn Header="Tipo Ingrediente" Binding="{Binding Tipo_Ingrediente}"/>
+                            <controls:DataGridTextColumn Header="Descrição" Binding="{Binding Descricao_Tipo_Ingrediente}"/>
+                            <controls:DataGridTextColumn Header="Situação" Binding="{Binding Situacao}"/>
+                            <controls:DataGridTextColumn Header="Sigla" Binding="{Binding Sigla}"/>
+
+                            <controls:DataGridTemplateColumn Header="Ações">
+                                <controls:DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <StackPanel Orientation="Horizontal" Spacing="8">
+                                            <Button Content="Editar" Click="EditarRegistroIngrediente_Click" Tag="{Binding}"/>
+                                            <Button Content="Excluir" Click="ExcluirRegistroIngrediente_Click" Tag="{Binding}"/>
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </controls:DataGridTemplateColumn.CellTemplate>
+                            </controls:DataGridTemplateColumn>
+                        </controls:DataGrid.Columns>
+                    </controls:DataGrid>
+                </StackPanel>
+            </muxc:Expander>
+            <!-- Expander com informações sobre o cadastro de formulações -->
+            <muxc:Expander IsExpanded="False" HorizontalAlignment="Stretch" Padding="12">
+                <muxc:Expander.Header>
+                    <StackPanel>
+                        <TextBlock Text="Tipo de Formulação" FontSize="16" FontWeight="SemiBold"/>
+                        <TextBlock Text="Cadastro de tipos de formulação, interena, terceirizada, etc" 
+                                   FontSize="14" Foreground="{StaticResource TextBrush}" Margin="0,4,0,0"/>
+                    </StackPanel>
+                </muxc:Expander.Header>
+
+                <StackPanel Spacing="16">
+                    <TextBlock Text="Cadastro" Style="{StaticResource SubtitleTextStyle}" Margin="0,0,0,8"/>
+                    <StackPanel Orientation="Vertical" Spacing="10" Margin="0,0,0,16">
+                        <TextBox x:Name="TipoFormulaTextBox" Header="Tipo Formulação" PlaceholderText="Digite o tipo da formulação"/>
+                        <TextBox x:Name="DescricaoFormulaTextBox" Header="Descrição Formulação" PlaceholderText="Digite a descrição"/>
+                        <Button Content="Salvar" Style="{StaticResource PrimaryButtonStyle}" Click="SalvarTipoFormulacao"/>
+                    </StackPanel>
+
+                    <TextBlock Text="Tipos de Formulações Registradas" Style="{StaticResource SubtitleTextStyle}" Margin="0,0,0,8"/>
+                    <controls:DataGrid x:Name="formulacaoDataGrid"
+                                       AutoGenerateColumns="False"
+                                       HeadersVisibility="Column"
+                                       GridLinesVisibility="Horizontal"
+                                       SelectionMode="Single"
+                                       IsReadOnly="True"
+                                       Style="{StaticResource DefaultDataGridStyle}"
+                                       ItemsSource="{x:Bind TipoFormulacoes, Mode=OneWay}">
+                        <controls:DataGrid.Columns>
+                            <controls:DataGridTextColumn Header="Tipo Formulação" Binding="{Binding Tipo_Formula}"/>
+                            <controls:DataGridTextColumn Header="Descrição" Binding="{Binding Descricao_Formula}"/>
+
+                            <controls:DataGridTemplateColumn Header="Ações">
+                                <controls:DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <StackPanel Orientation="Horizontal" Spacing="8">
+                                            <Button Content="Editar" Click="EditarRegistroFormulacao_Click" Tag="{Binding}"/>
+                                            <Button Content="Excluir" Click="ExcluirRegistroFormulacao_Click" Tag="{Binding}"/>
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </controls:DataGridTemplateColumn.CellTemplate>
+                            </controls:DataGridTemplateColumn>
+                        </controls:DataGrid.Columns>
+                    </controls:DataGrid>
+                </StackPanel>
+            </muxc:Expander>
+        </StackPanel>
+    </ScrollViewer>
+
+    
+    
+</Page>

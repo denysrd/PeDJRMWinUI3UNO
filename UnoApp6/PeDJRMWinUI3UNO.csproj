@@ -1,0 +1,151 @@
+<Project Sdk="Uno.Sdk">
+  <PropertyGroup>
+    <TargetFrameworks>net8.0-windows10.0.26100</TargetFrameworks>
+
+    <OutputType>Exe</OutputType>
+    <UnoSingleProject>true</UnoSingleProject>
+
+    <!-- Display name -->
+    <ApplicationTitle>PeDJRM</ApplicationTitle>
+    <!-- App Identifier -->
+    <ApplicationId>JRM-Industries</ApplicationId>
+    <!-- Versions -->
+    <ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>
+    <ApplicationVersion>1</ApplicationVersion>
+    <!-- Package Publisher -->
+    <ApplicationPublisher>User</ApplicationPublisher>
+    <!-- Package Description -->
+    <Description>PeD powered by JRM Industries.</Description>
+    <!--
+      If you encounter this error message:
+
+        error NETSDK1148: A referenced assembly was compiled using a newer version of Microsoft.Windows.SDK.NET.dll.
+        Please update to a newer .NET SDK in order to reference this assembly.
+
+      This means that the two packages below must be aligned with the "build" version number of
+      the "Microsoft.Windows.SDK.BuildTools" package above, and the "revision" version number
+      must be the highest found in https://www.nuget.org/packages/Microsoft.Windows.SDK.NET.Ref.
+    -->
+    <!-- <WindowsSdkPackageVersion>10.0.22621.28</WindowsSdkPackageVersion> -->
+
+    <!--
+      UnoFeatures let's you quickly add and manage implicit package references based on the features you want to use.
+      https://aka.platform.uno/singleproject-features
+    -->
+    <UnoFeatures>
+      Lottie;
+      Hosting;
+      Toolkit;
+      Logging;
+      Mvvm;
+      Configuration;
+      Http;
+      Serialization;
+      Localization;
+      Navigation;
+      ThemeService;
+    </UnoFeatures>
+  </PropertyGroup>
+  <ItemGroup>
+    <None Remove="Presentation\CadastroPage.xaml" />
+    <None Remove="Presentation\Fornecedores.xaml" />
+    <None Remove="Presentation\HomePage.xaml" />
+    <None Remove="Presentation\ReceitaPage.xaml" />
+    <None Remove="Presentation\SettingsPage.xaml" />
+    <None Remove="Presentation\TipoFormulacao.xaml" />
+    <None Remove="Presentation\TipoIngrediente.xaml" />
+    <None Remove="Resources\Colors.xaml" />
+    <None Remove="Resources\Styles.xaml" />
+    <None Remove="Views\Cadastros\Fornecedor\CadastroFornecedorPage.xaml" />
+    <None Remove="Views\Cadastros\InsumosView.xaml" />
+
+  </ItemGroup>
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Presentation\CadastroPage.xaml" />
+  </ItemGroup>
+  <ItemGroup>
+    <AdditionalFiles Remove="Presentation\CadastroPage.xaml" />
+  </ItemGroup>
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Presentation\HomePage.xaml" />
+  </ItemGroup>
+  <ItemGroup>
+    <AdditionalFiles Remove="Presentation\HomePage.xaml" />
+  </ItemGroup>
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Presentation\ReceitaPage.xaml" />
+  </ItemGroup>
+  <ItemGroup>
+    <AdditionalFiles Remove="Presentation\ReceitaPage.xaml" />
+  </ItemGroup>
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Presentation\SettingsPage.xaml" />
+  </ItemGroup>
+  <ItemGroup>
+    <AdditionalFiles Remove="Presentation\SettingsPage.xaml" />
+  </ItemGroup>
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Presentation\Fornecedores.xaml" />
+  </ItemGroup>
+  <ItemGroup>
+    <AdditionalFiles Remove="Presentation\Fornecedores.xaml" />
+  </ItemGroup>
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Presentation\TipoIngrediente.xaml" />
+  </ItemGroup>
+  <ItemGroup>
+    <AdditionalFiles Remove="Presentation\TipoIngrediente.xaml" />
+  </ItemGroup>
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Presentation\TipoFormulacao.xaml" />
+  </ItemGroup>
+  <ItemGroup>
+    <AdditionalFiles Remove="Presentation\TipoFormulacao.xaml" />
+  </ItemGroup>
+ 
+  <ItemGroup>
+    <Folder Include="Helpers\" />
+    <Folder Include="Converters\" />
+    <Folder Include="Serialization\" />
+    <Folder Include="ViewModels\" />
+  </ItemGroup>
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Views\Cadastros\Fornecedor\CadastroFornecedorPage.xaml" />
+  </ItemGroup>
+  <ItemGroup>
+    <AdditionalFiles Remove="Views\Cadastros\Fornecedor\CadastroFornecedorPage.xaml" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="CommunityToolkit.WinUI.UI.Controls.DataGrid" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" />
+    <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" />
+    <PackageReference Include="Refit" />
+  </ItemGroup>
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Resources\Colors.xaml" />
+  </ItemGroup>
+  <ItemGroup>
+    <AdditionalFiles Remove="Resources\Colors.xaml" />
+  </ItemGroup>
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Resources\Styles.xaml" />
+  </ItemGroup>
+  <ItemGroup>
+    <AdditionalFiles Remove="Resources\Styles.xaml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Page Update="Views\Cadastros\Fornecedor\CadastroFornecedorPage.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+      <SourceItemGroup>Page</SourceItemGroup>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Views\Cadastros\Fornecedor\FornecedorPage.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+      <SourceItemGroup>Page</SourceItemGroup>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <AdditionalFiles Remove="Views\Cadastros\CadastroPage.xaml" />
+  </ItemGroup>
+</Project>

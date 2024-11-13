@@ -1,0 +1,14 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <!-- Definições de cores -->
+    <Color x:Key="PrimaryColor">#FF6200EE</Color>
+    <Color x:Key="SecondaryColor">#FF03DAC5</Color>
+    <Color x:Key="BackgroundColor">#FFFFFFFF</Color>
+    <Color x:Key="TextColor">#FF000000</Color>
+
+    <!-- Brushes para reutilização -->
+    <SolidColorBrush x:Key="PrimaryBrush" Color="#FF6200EE"/>
+    <SolidColorBrush x:Key="SecondaryBrush" Color="#FF03DAC5"/>
+    <SolidColorBrush x:Key="BackgroundBrush" Color="#FFFFFFFF"/>
+    <SolidColorBrush x:Key="TextBrush" Color="#FF000000"/>
+</ResourceDictionary>
