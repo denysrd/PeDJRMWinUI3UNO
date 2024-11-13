@@ -52,7 +52,7 @@ public sealed partial class CadastroFornecedorPage : Page
             Documento = DocumentoTextBox.Text,
             Email = EmailTextBox.Text,
             Telefone = TelefoneTextBox.Text,
-           // Situacao = SituacaoToggleSwitch.IsOn
+            Situacao = SituacaoToggleSwitch.IsOn
         };
 
         bool sucesso = await _fornecedorService.InserirFornecedorAsync(fornecedor);

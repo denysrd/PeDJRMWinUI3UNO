@@ -132,68 +132,6 @@ public sealed partial class InsumosView : Page
         }
     }
 
-
-    // sanvar funcionando para novo registro e para edição, porem não atualiza o datagrid após edição
-    //private async void SalvarInsumo_Click(object sender, RoutedEventArgs e)
-    //{
-    //    if (SiglaComboBox.SelectedItem is TipoIngredienteModel tipoIngrediente && FornecedorComboBox.SelectedItem is FornecedorModel fornecedor)
-    //    {
-    //        if (insumoEmEdicao == null)
-    //        {
-    //            insumoEmEdicao = new InsumosModel
-    //            {
-    //                Id_Insumo = 0, // Define explicitamente para 0 ao criar um novo registro
-    //                Codigo_Interno = CodigoInternoTextBox.Text
-    //            };
-    //        }
-    //        else
-    //        {
-    //            insumoEmEdicao.Codigo_Interno = CodigoInternoTextBox.Text;
-    //        }
-
-    //        insumoEmEdicao.Nome = NomeTextBox.Text;
-    //        insumoEmEdicao.Custo = decimal.TryParse(CustoTextBox.Text, out var custo) ? custo : 0;
-    //        insumoEmEdicao.Descricao_Insumo = DescricaoInsumoTextBox.Text;
-    //        insumoEmEdicao.codigo_produto_fornecedor = CodigoFornecedorTextBox.Text;
-    //        insumoEmEdicao.Id_Fornecedor = fornecedor.Id_Fornecedor;
-    //        insumoEmEdicao.IdTipoIngrediente = tipoIngrediente.Id_Tipo_Ingrediente;
-
-    //        bool sucesso;
-    //        if (insumoEmEdicao.Id_Insumo == 0) // Novo insumo
-    //        {
-    //            sucesso = await _insumosService.SalvarAsync(insumoEmEdicao);
-    //            if (sucesso) Insumos.Add(insumoEmEdicao);
-    //        }
-    //        else // Atualização de insumo existente
-    //        {
-    //            sucesso = await _insumosService.AtualizarAsync(insumoEmEdicao);
-    //            if (sucesso)
-    //            {
-    //                var insumoExistente = Insumos.FirstOrDefault(i => i.Id_Insumo == insumoEmEdicao.Id_Insumo);
-    //                if (insumoExistente != null)
-    //                {
-    //                    insumoExistente.Nome = insumoEmEdicao.Nome;
-    //                    insumoExistente.Custo = insumoEmEdicao.Custo;
-    //                    insumoExistente.Codigo_Interno = insumoEmEdicao.Codigo_Interno;
-    //                    insumoExistente.Descricao_Insumo = insumoEmEdicao.Descricao_Insumo;
-    //                    insumoExistente.codigo_produto_fornecedor = insumoEmEdicao.codigo_produto_fornecedor;
-    //                    insumoExistente.Id_Fornecedor = insumoEmEdicao.Id_Fornecedor;
-    //                    insumoExistente.IdTipoIngrediente = insumoEmEdicao.IdTipoIngrediente;
-    //                }
-    //            }
-    //        }
-
-    //        if (sucesso)
-    //        {
-    //            LimparCampos();
-    //        }
-    //        else
-    //        {
-    //            await MostrarDialogoAviso("Falha ao salvar ou atualizar o insumo. Verifique os campos.");
-    //        }
-    //    }
-    //}
-
     private async void SalvarInsumo_Click(object sender, RoutedEventArgs e)
     {
         if (SiglaComboBox.SelectedItem is TipoIngredienteModel tipoIngrediente && FornecedorComboBox.SelectedItem is FornecedorModel fornecedor)
@@ -222,6 +160,7 @@ public sealed partial class InsumosView : Page
             insumoEmEdicao.codigo_produto_fornecedor = CodigoFornecedorTextBox.Text;
             insumoEmEdicao.Id_Fornecedor = fornecedor.Id_Fornecedor;
             insumoEmEdicao.IdTipoIngrediente = tipoIngrediente.Id_Tipo_Ingrediente;
+            insumoEmEdicao.Situacao = SituacaoToggleSwitch.IsOn; // Salva o estado do ToggleButton
 
             var insumoComCodigoFornecedor = Insumos.FirstOrDefault(i => i.codigo_produto_fornecedor == insumoEmEdicao.codigo_produto_fornecedor && i.Id_Insumo != insumoEmEdicao.Id_Insumo);
             if (insumoComCodigoFornecedor != null)
@@ -294,6 +233,9 @@ public sealed partial class InsumosView : Page
 
             SiglaComboBox.SelectedItem = TipoIngredientes.FirstOrDefault(t => t.Id_Tipo_Ingrediente == insumo.IdTipoIngrediente);
             FornecedorComboBox.SelectedItem = Fornecedores.FirstOrDefault(f => f.Id_Fornecedor == insumo.Id_Fornecedor);
+
+            // Define o estado do ToggleButton com base na propriedade "Situacao" do insumo
+            SituacaoToggleSwitch.IsOn = insumo.Situacao;            
         }
     }
 

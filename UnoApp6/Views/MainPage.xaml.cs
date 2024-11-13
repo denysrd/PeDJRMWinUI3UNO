@@ -1,4 +1,9 @@
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Navigation;
 using PeDJRMWinUI3UNO.Views.Cadastros;
+using System;
+using muxc = Microsoft.UI.Xaml.Controls;
 
 namespace PeDJRMWinUI3UNO
 {
@@ -7,80 +12,56 @@ namespace PeDJRMWinUI3UNO
         public MainPage()
         {
             this.InitializeComponent();
-            MainNavigationView.SelectedItem = MainNavigationView.MenuItems[0]; // Seleciona a página inicial
+            ContentFrame.Navigated += ContentFrame_Navigated;
         }
 
-        // Método chamado quando o item do NavigationView é alterado
-        private async void MainNavigationView_SelectionChanged(NavigationView sender, NavigationViewSelectionChangedEventArgs args)
+        private void MainNavigationView_SelectionChanged(muxc.NavigationView sender, muxc.NavigationViewSelectionChangedEventArgs args)
         {
             if (args.IsSettingsSelected)
             {
-                // Verifica se o usuário pode sair da página atual
-                bool canNavigate = await CheckUnsavedDataAsync();
-                if (!canNavigate) return;
-
                 ContentFrame.Navigate(typeof(SettingsPage));
             }
-            else if (args.SelectedItem is NavigationViewItem selectedItem)
+            else
             {
-                // Verifica se o usuário pode sair da página atual
-                bool canNavigate = await CheckUnsavedDataAsync();
-                if (!canNavigate) return;
-
-                // Obtém a tag do item selecionado e navega para a página correspondente
-                string pageTag = selectedItem.Tag.ToString();
-                Type pageType = GetPageTypeByTag(pageTag);
-
-                if (pageType != null)
+                var selectedItem = args.SelectedItem as muxc.NavigationViewItem;
+                if (selectedItem != null)
                 {
-                    ContentFrame.Navigate(pageType);
+                    string pageTag = selectedItem.Tag.ToString();
+                    Type pageType = pageTag switch
+                    {
+                        "HomePage" => typeof(HomePage),
+                        "CadastroPage" => typeof(CadastroPage),
+                        "ReceitaPage" => typeof(ReceitaPage),
+                        _ => null
+                    };
+
+                    if (pageType == typeof(CadastroPage))
+                    {
+                        // Limpa o histórico de navegação para forçar a exibição da página inicial de CadastroPage
+                        ContentFrame.BackStack.Clear();
+                        ContentFrame.Navigate(typeof(CadastroPage));
+                    }
+                    else if (pageType != null && ContentFrame.CurrentSourcePageType != pageType)
+                    {
+                        ContentFrame.Navigate(pageType);
+                    }
                 }
             }
         }
 
-        // Verifica se há dados não salvos antes de navegar
-        private async Task<bool> CheckUnsavedDataAsync()
+        private void ContentFrame_Navigated(object sender, NavigationEventArgs e)
         {
-            // Exemplo de verificação de dados não salvos
-            bool hasUnsavedData = CheckForUnsavedData(); // Implemente sua lógica de verificação de dados não salvos
+            MainNavigationView.IsBackButtonVisible = ContentFrame.CanGoBack
+                ? muxc.NavigationViewBackButtonVisible.Visible
+                : muxc.NavigationViewBackButtonVisible.Collapsed;
+        }
 
-            if (hasUnsavedData)
+        private void MainNavigationView_BackRequested(muxc.NavigationView sender, muxc.NavigationViewBackRequestedEventArgs args)
+        {
+            if (ContentFrame.CanGoBack)
             {
-                var dialog = new ContentDialog
-                {
-                    Title = "Dados Não Salvos",
-                    Content = "Você tem dados não salvos. Tem certeza de que deseja sair?",
-                    PrimaryButtonText = "Sim",
-                    CloseButtonText = "Cancelar",
-                    DefaultButton = ContentDialogButton.Close,
-                    XamlRoot = this.XamlRoot
-                };
-
-                var result = await dialog.ShowAsync();
-                return result == ContentDialogResult.Primary;
+                ContentFrame.GoBack();
             }
-
-            return true;
-        }
-
-        // Simula a verificação de dados não salvos (implemente a lógica real conforme necessário)
-        private bool CheckForUnsavedData()
-        {
-            // Retorne verdadeiro se houver dados não salvos, falso caso contrário
-            return false; // Exemplo: retorne "true" para simular dados não salvos
-        }
-
-        // Retorna o tipo da página correspondente ao nome da tag
-        private Type GetPageTypeByTag(string tag)
-        {
-            return tag switch
-            {
-                "HomePage" => typeof(HomePage),
-                "CadastroPage" => typeof(CadastroPage),
-                "ReceitaPage" => typeof(ReceitaPage),
-                "SettingsPage" => typeof(SettingsPage),
-                _ => null
-            };
         }
     }
 }

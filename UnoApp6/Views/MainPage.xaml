@@ -11,9 +11,12 @@
 
     <Grid>
         <muxc:NavigationView x:Name="MainNavigationView"
-                             IsBackButtonVisible="Collapsed"
+                             IsBackEnabled="True"
+                             IsSettingsVisible="True"
+                             IsBackButtonVisible="Visible"
                              PaneDisplayMode="Left"
-                             SelectionChanged="MainNavigationView_SelectionChanged">
+                             SelectionChanged="MainNavigationView_SelectionChanged"
+                             BackRequested="MainNavigationView_BackRequested">
 
             <muxc:NavigationView.MenuItems>
                 <muxc:NavigationViewItem Icon="Home" Content="Home" Tag="HomePage"/>
