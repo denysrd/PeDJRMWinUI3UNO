@@ -16,15 +16,28 @@
 
         <!-- Title Section with ScrollViewer -->
         <ScrollViewer Grid.Row="0" VerticalScrollBarVisibility="Auto">
-            <StackPanel HorizontalAlignment="Stretch" VerticalAlignment="Top" Spacing="7">
-                <Grid Padding="25" CornerRadius="12" HorizontalAlignment="Center">
-                    <StackPanel Orientation="Horizontal">
+            <StackPanel Style="{StaticResource DefaultStackPanelStyle}">
+                <Grid Padding="1" CornerRadius="4" HorizontalAlignment="Center">
+                    <StackPanel Style="{StaticResource DefaultStackPanelStyle}">
                         <TextBlock Text="Cadastros" FontSize="32" FontWeight="Bold" Margin="0,0,0,20"/>
                     </StackPanel>
                 </Grid>
+                
+                <!-- Flavorizantes Button -->
+                <Grid Background="#FFFFFF" Padding="15" CornerRadius="4" Tapped="NavigateToFlavorizantes" HorizontalAlignment="Stretch">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                        <SymbolIcon Symbol="Bookmarks" Foreground="Gray"/>
+                        <TextBlock Text="Flavorizantes" Margin="10,0,0,0" FontSize="16" FontWeight="Bold" VerticalAlignment="Center"/>
+                    </StackPanel>
+                    <FontIcon Glyph="&#xE72A;" FontFamily="Segoe MDL2 Assets" Foreground="Gray" FontSize="12" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Right"/>
+                </Grid>
 
                 <!-- Insumos Button -->
-                <Grid Background="#FFFFFF" Padding="15" CornerRadius="12" Tapped="NavigateToInsumos" HorizontalAlignment="Stretch">
+                <Grid Background="#FFFFFF" Padding="15" CornerRadius="4" Tapped="NavigateToInsumos" HorizontalAlignment="Stretch">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*" />
                         <ColumnDefinition Width="Auto" />
@@ -37,7 +50,7 @@
                 </Grid>
 
                 <!-- Fornecedores Button -->
-                <Grid Background="#FFFFFF" Padding="15" CornerRadius="12" Tapped="NavigateToFornecedores" HorizontalAlignment="Stretch">
+                <Grid Background="#FFFFFF" Padding="15" CornerRadius="4" Tapped="NavigateToFornecedores" HorizontalAlignment="Stretch">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*" />
                         <ColumnDefinition Width="Auto" />
@@ -50,7 +63,7 @@
                 </Grid>
 
                 <!-- Cadastros Auxiliares Button -->
-                <Grid Background="#FFFFFF" Padding="15" CornerRadius="12" Tapped="NavigateToCadastrosAuxiliares" HorizontalAlignment="Stretch">
+                <Grid Background="#FFFFFF" Padding="15" CornerRadius="4" Tapped="NavigateToCadastrosAuxiliares" HorizontalAlignment="Stretch">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*" />
                         <ColumnDefinition Width="Auto" />

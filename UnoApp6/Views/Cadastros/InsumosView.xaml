@@ -11,11 +11,11 @@
     mc:Ignorable="d">
 
     <ScrollViewer VerticalScrollBarVisibility="Auto">
-        <StackPanel Padding="24" Spacing="16">
+        <StackPanel Style="{StaticResource DefaultStackPanelStyle}">
             <TextBlock Text="Cadastro de Insumos" Style="{StaticResource TitleTextStyle}" Margin="0,0,0,16"/>
 
             <Border BorderThickness="1" BorderBrush="Gray" Padding="16">
-                <StackPanel Spacing="12">
+                <StackPanel Style="{StaticResource DefaultStackPanelStyle}">
                     <TextBox x:Name="NomeTextBox" Header="Nome" PlaceholderText="Digite o nome do insumo" />
                     <TextBox x:Name="CustoTextBox" Header="Custo (R$)" PlaceholderText="Digite o custo" InputScope="CurrencyAmount"/>
 

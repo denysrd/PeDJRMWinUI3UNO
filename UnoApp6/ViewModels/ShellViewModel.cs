@@ -1,4 +1,4 @@
-namespace PeDJRMWinUI3UNO.Views;
+namespace PeDJRMWinUI3UNO.ViewModels;
 
 public class ShellViewModel
 {

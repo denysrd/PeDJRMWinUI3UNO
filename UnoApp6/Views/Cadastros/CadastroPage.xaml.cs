@@ -6,10 +6,17 @@ public sealed partial class CadastroPage : Page
     {
         this.InitializeComponent();
     }
+    
+    private void NavigateToFlavorizantes(object sender, RoutedEventArgs e)
+    {
+        Frame.Navigate(typeof(FlavorizantesView));
+    }
+
     private void NavigateToInsumos(object sender, RoutedEventArgs e)
     {
         Frame.Navigate(typeof(InsumosView));
     }
+
     private void NavigateToFornecedores(object sender, RoutedEventArgs e)
     {
         Frame.Navigate(typeof(Fornecedor.FornecedorPage));
@@ -19,6 +26,4 @@ public sealed partial class CadastroPage : Page
     {
         Frame.Navigate(typeof(CadastrosAuxiliares.CadastrosAuxiliaresView));
     }
-
-
 }

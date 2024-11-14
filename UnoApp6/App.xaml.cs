@@ -8,7 +8,9 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Uno.Extensions.Configuration;
-
+using PeDJRMWinUI3UNO.ViewModels;
+using PeDJRMWinUI3UNO.Views.Cadastros;
+using PeDJRMWinUI3UNO.Configurations;
 namespace PeDJRMWinUI3UNO;
 
 public partial class App : Application
@@ -25,29 +27,9 @@ public partial class App : Application
     {
         var services = new ServiceCollection();
 
-        // Configuração de DbContext com MySQL
-        try
-        {
-            services.AddDbContext<AppDbContext>(options =>
-                options.UseMySql("Server=localhost;Database=db_jrmsistema;User=root;Password=Neoo@@141189;",
-                    new MySqlServerVersion(new Version(8, 0, 21))
-                ));
-        }
-        catch (Exception ex)
-        {
-            // Exibe erro de conexão com o banco de dados (pode logar ou tratar conforme necessário)
-            Console.WriteLine($"Erro ao conectar ao banco de dados: {ex.Message}");
-        }
+        // Registra os serviços e repositórios usando ServiceConfiguration
+        ServiceConfiguration.RegisterServices(services);
 
-        // Adiciona repositórios e serviços
-        services.AddTransient<FornecedorRepository>();
-        services.AddTransient<FornecedorService>();
-        services.AddTransient<TipoIngredienteRepository>();
-        services.AddTransient<TipoIngredienteService>();
-        services.AddTransient<TipoFormulacaoRepository>();
-        services.AddTransient<TipoFormulacaoService>();
-        services.AddTransient<InsumosService>();
-        services.AddTransient<InsumosRepository>();
         Services = services.BuildServiceProvider();
     }
 
@@ -88,14 +70,16 @@ public partial class App : Application
     {
         views.Register(
             new ViewMap(ViewModel: typeof(ShellViewModel)),
-            new ViewMap<MainPage, MainViewModel>()
+            new ViewMap<MainPage, MainViewModel>(),
+            new ViewMap<FlavorizantesView, FlavorizantesViewModel>() // Adiciona FlavorizantesView
         );
 
         routes.Register(
             new RouteMap("", View: views.FindByViewModel<ShellViewModel>(),
                 Nested:
                 [
-                    new("Main", View: views.FindByViewModel<MainViewModel>(), IsDefault: true)
+                    new("Main", View: views.FindByViewModel<MainViewModel>(), IsDefault: true),
+                    new("Flavorizantes", View: views.FindByViewModel<FlavorizantesViewModel>()) // Rota para FlavorizantesView
                 ]
             )
         );

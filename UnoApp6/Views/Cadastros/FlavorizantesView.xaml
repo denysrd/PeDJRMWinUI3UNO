@@ -1,0 +1,99 @@
+﻿<Page
+    x:Class="PeDJRMWinUI3UNO.Views.Cadastros.FlavorizantesView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
+    xmlns:controls="using:CommunityToolkit.WinUI.UI.Controls"
+    xmlns:models="using:PeDJRMWinUI3UNO.Models"
+    xmlns:local="using:PeDJRMWinUI3UNO.Views.Cadastros"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel Padding="24" Spacing="3">
+            <TextBlock Text="Flavorizantes" Style="{StaticResource TitleTextStyle}" Margin="0,0,0,8"/>
+
+            <!-- Expander para Cadastro de Flavorizantes -->
+            <muxc:Expander IsExpanded="False" HorizontalAlignment="Stretch">
+                <muxc:Expander.Header>
+                    <StackPanel>
+                        <!-- Título do Expander -->
+                        <TextBlock Text="Cadastro de Flavorizantes" FontSize="16" FontWeight="SemiBold"/>
+                        <!-- Descrição do Expander -->
+                        <TextBlock Text="Tela de cadastro de flavorizantes de terceiros e internos." 
+                   FontSize="14" Foreground="{StaticResource TextBrush}" Margin="0,4,0,0"/>
+                    </StackPanel>
+                </muxc:Expander.Header>
+
+                <StackPanel Spacing="10" Padding="10">
+                    <!-- Campos de entrada para Flavorizantes -->
+                    <TextBox x:Name="NomeTextBox" Header="Nome" PlaceholderText="Digite o nome do flavorizante"/>
+                    <TextBox x:Name="CustoTextBox" Header="Custo" PlaceholderText="Digite o custo"/>
+                    <TextBox x:Name="CodigoFornecedorTextBox" Header="Código Produto Fornecedor" PlaceholderText="Digite o código do produto do fornecedor"/>
+
+                    <!-- ComboBox para Tipo de Aroma -->
+                    <ComboBox x:Name="TipoAromaComboBox" Header="Tipo de Aroma"
+                              PlaceholderText="Selecione o tipo de aroma"
+                              ItemsSource="{x:Bind TipoAromas}"
+                              DisplayMemberPath="Sigla"
+                              SelectionChanged="TipoAromaComboBox_SelectionChanged"/>
+
+                    <!-- ComboBox para Fornecedor -->
+                    <ComboBox x:Name="FornecedorComboBox" Header="Fornecedor"
+                              PlaceholderText="Selecione o fornecedor"
+                              ItemsSource="{x:Bind Fornecedores}"
+                              DisplayMemberPath="Nome"
+                              SelectionChanged="FornecedorComboBox_SelectionChanged"/>
+
+                    <!-- Código Interno (não editável) -->
+                    <TextBox x:Name="CodigoInternoTextBox" Header="Código Interno" IsReadOnly="True" />
+
+                    <!-- ToggleSwitch para Situação -->
+                    <ToggleSwitch x:Name="SituacaoToggleSwitch" Header="Situação" OnContent="Ativo" OffContent="Inativo" Margin="0,10,0,0"/>
+
+                    <!-- Botões de ações lado a lado -->
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
+                        <Button Content="Salvar" Click="SalvarFlavorizante_Click" Style="{StaticResource PrimaryButtonStyle}" Margin="0,0,8,0"/>
+                        <Button Content="Limpar" Click="LimparCampos_Click" Style="{StaticResource PrimaryButtonStyle}"/>
+                    </StackPanel>
+                </StackPanel>
+            </muxc:Expander>
+
+            <!-- Campo de filtro -->
+            <TextBox x:Name="FiltroTextBox" Header="Filtro" PlaceholderText="Digite para filtrar..." TextChanged="FiltroTextBox_TextChanged" Margin="0,10,0,0"/>
+
+            <!-- ComboBox para selecionar itens por página -->
+            <ComboBox x:Name="ItensPorPaginaComboBox" Header="Itens por página" SelectionChanged="ItensPorPaginaComboBox_SelectionChanged">
+                <ComboBoxItem Content="10" />
+                <ComboBoxItem Content="20" />
+                <ComboBoxItem Content="50" />
+                <ComboBoxItem Content="Todos" />
+            </ComboBox>
+
+            <!-- Grid de exibição dos flavorizantes com paginação -->
+            <controls:DataGrid x:Name="FlavorizanteDataGrid"
+                               AutoGenerateColumns="False"
+                               HeadersVisibility="Column"
+                               GridLinesVisibility="Horizontal"
+                               SelectionMode="Single"
+                               IsReadOnly="True">
+                <controls:DataGrid.Columns>
+                    <controls:DataGridTextColumn Header="Nome" Binding="{Binding Nome}"/>
+                    <controls:DataGridTextColumn Header="Custo" Binding="{Binding Custo}"/>
+                    <controls:DataGridTextColumn Header="Código Interno" Binding="{Binding Codigo_Interno}"/>
+                    <controls:DataGridTextColumn Header="Código Fornecedor" Binding="{Binding Codigo_Fornecedor}"/>
+                </controls:DataGrid.Columns>
+            </controls:DataGrid>
+
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,10,0,0">
+                <Button Content="Anterior" Click="PaginaAnterior_Click" IsEnabled="{x:Bind TemPaginaAnterior}" Margin="0,0,8,0"/>
+                <!-- Exibição do número da página atual e total de páginas -->
+                <TextBlock Text="{x:Bind _paginaAtual, Mode=OneWay}" Margin="0,0,4,0"/>
+                <TextBlock Text="/" Margin="0,0,4,0"/>
+                <TextBlock Text="{x:Bind NumeroTotalPaginas, Mode=OneWay}" Margin="0,0,8,0"/>
+                <Button Content="Próximo" Click="PaginaProxima_Click" IsEnabled="{x:Bind TemPaginaProxima}"/>
+            </StackPanel>
+        </StackPanel>
+    </ScrollViewer>
+</Page>

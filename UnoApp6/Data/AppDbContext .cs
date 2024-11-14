@@ -13,6 +13,7 @@ namespace PeDJRMWinUI3UNO.Data
         public DbSet<TipoIngredienteModel> TipoIngredientes { get; set; }
         public DbSet<TipoFormulacaoModel> TipoFormulacaoModel { get; set; }
         public DbSet<InsumosModel> InsumosModel { get; set; }
+        public DbSet<FlavorizantesModel> FlavorizantesModel { get; set; }
 
         // Configuração condicional do DbContext
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -63,6 +64,34 @@ namespace PeDJRMWinUI3UNO.Data
                 entity.HasOne(e => e.TipoIngrediente)
                       .WithMany()
                       .HasForeignKey(e => e.IdTipoIngrediente)
+                      .OnDelete(DeleteBehavior.Restrict);
+            });
+            modelBuilder.Entity<InsumosModel>(entity =>
+            {
+                entity.HasKey(e => e.Id_Insumo);
+                entity.Property(e => e.Nome).IsRequired();
+                entity.Property(e => e.Custo).HasColumnType("decimal(18,2)");
+
+                // Configuração da chave estrangeira para TipoIngrediente
+                entity.HasOne(e => e.TipoIngrediente)
+                      .WithMany()
+                      .HasForeignKey(e => e.IdTipoIngrediente)
+                      .OnDelete(DeleteBehavior.Restrict);
+            });
+
+            modelBuilder.Entity<FlavorizantesModel>(entity =>
+            {
+                entity.HasKey(e => e.Id_Flavorizante);
+                entity.Property(e => e.Nome).IsRequired();
+                entity.Property(e => e.Custo).HasColumnType("decimal(18,2)");
+                entity.Property(e => e.Codigo_Interno).IsRequired();
+                entity.Property(e => e.Codigo_Fornecedor).IsRequired();
+                entity.Property(e => e.Situacao).IsRequired().HasDefaultValue(false);
+
+                // Configuração da chave estrangeira para TipoIngrediente
+                entity.HasOne(e => e.Fornecedor)
+                      .WithMany()
+                      .HasForeignKey(e => e.Id_Fornecedor)
                       .OnDelete(DeleteBehavior.Restrict);
             });
         }

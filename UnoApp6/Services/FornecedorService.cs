@@ -59,13 +59,48 @@ namespace PeDJRMWinUI3UNO.Services
                 if (fornecedor != null)
                 {
                     await _fornecedorRepository.RemoverFornecedorAsync(id);
-
                     await transaction.CommitAsync();
                 }
                 else
                 {
                     throw new Exception("Fornecedor não encontrado.");
                 }
+            }
+            catch
+            {
+                await transaction.RollbackAsync();
+                throw;
+            }
+        }
+
+        // Método para atualizar um fornecedor existente
+        public async Task<bool> AtualizarFornecedorAsync(FornecedorModel fornecedor)
+        {
+            if (string.IsNullOrWhiteSpace(fornecedor.Nome) || !ValidarDocumento(fornecedor.Documento))
+            {
+                return false;
+            }
+
+            await using var transaction = await _context.Database.BeginTransactionAsync();
+            try
+            {
+                var fornecedorExistente = await _fornecedorRepository.FindAsync(fornecedor.Id_Fornecedor);
+                if (fornecedorExistente == null)
+                {
+                    throw new Exception("Fornecedor não encontrado.");
+                }
+
+                // Atualiza os campos do fornecedor existente
+                fornecedorExistente.Nome = fornecedor.Nome;
+                fornecedorExistente.Documento = fornecedor.Documento;
+                fornecedorExistente.Email = fornecedor.Email;
+                fornecedorExistente.Telefone = fornecedor.Telefone;
+                fornecedorExistente.Situacao = fornecedor.Situacao;
+
+                // Chama o repositório para salvar as alterações
+                var result = await _fornecedorRepository.AtualizarFornecedorAsync(fornecedorExistente);
+                await transaction.CommitAsync();
+                return result;
             }
             catch
             {

@@ -12,8 +12,8 @@
 
     <!-- ScrollViewer para permitir rolagem da página completa -->
     <ScrollViewer VerticalScrollBarVisibility="Auto">
-        <StackPanel Padding="24" Spacing="16">
-            <TextBlock Text="Cadastros Auxiliares" Style="{StaticResource TitleTextStyle}" Margin="0,0,0,16"/>
+        <StackPanel Style="{StaticResource DefaultStackPanelStyle}">
+            <TextBlock Text="Cadastros Auxiliares" Style="{StaticResource TitleTextStyle}" Margin="0,0,0,8"/>
 
             <!-- Expander com Título e Descrição no Cabeçalho -->
             <muxc:Expander IsExpanded="False" HorizontalAlignment="Stretch" Padding="12">
@@ -28,7 +28,7 @@
                 </muxc:Expander.Header>
 
                 <!-- Conteúdo do Expander -->
-                <StackPanel Spacing="16">
+                <StackPanel Style="{StaticResource DefaultStackPanelStyle}">
                     <TextBlock Text="Cadastro" Style="{StaticResource SubtitleTextStyle}" Margin="0,0,0,8"/>
                     <StackPanel Orientation="Vertical" Spacing="10" Margin="0,0,0,16">
                         <TextBox x:Name="TipoIngredienteTextBox" Header="Tipo Ingrediente" PlaceholderText="Digite o tipo"/>
@@ -77,7 +77,7 @@
                     </StackPanel>
                 </muxc:Expander.Header>
 
-                <StackPanel Spacing="16">
+                <StackPanel Style="{StaticResource DefaultStackPanelStyle}">
                     <TextBlock Text="Cadastro" Style="{StaticResource SubtitleTextStyle}" Margin="0,0,0,8"/>
                     <StackPanel Orientation="Vertical" Spacing="10" Margin="0,0,0,16">
                         <TextBox x:Name="TipoFormulaTextBox" Header="Tipo Formulação" PlaceholderText="Digite o tipo da formulação"/>
