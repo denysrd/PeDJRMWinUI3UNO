@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using PeDJRMWinUI3UNO.Models;
+using PeDJRMWinUI3UNO.Data;
 
 namespace PeDJRMWinUI3UNO.Repositories
 {
@@ -11,12 +12,12 @@ namespace PeDJRMWinUI3UNO.Repositories
     /// </summary>
     public class VersoesReceitasRepository
     {
-        private readonly ApplicationDbContext _context;
+        private readonly AppDbContext _context;
 
         /// <summary>
         /// Construtor do repositório.
         /// </summary>
-        public VersoesReceitasRepository(ApplicationDbContext context)
+        public VersoesReceitasRepository(AppDbContext context)
         {
             _context = context;
         }

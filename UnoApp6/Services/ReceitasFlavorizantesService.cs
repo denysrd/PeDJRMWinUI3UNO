@@ -23,7 +23,7 @@ namespace PeDJRMWinUI3UNO.Services
         /// <summary>
         /// Obtém todos os flavorizantes de receitas cadastrados.
         /// </summary>
-        public async Task<List<ReceitasFlavorizantesInsumosModel>> GetAllReceitasFlavorizantesAsync()
+        public async Task<List<ReceitasFlavorizantesModel>> GetAllReceitasFlavorizantesAsync()
         {
             return await _repository.GetAllAsync();
         }
@@ -31,7 +31,7 @@ namespace PeDJRMWinUI3UNO.Services
         /// <summary>
         /// Obtém um flavorizante de receita específico pelo ID.
         /// </summary>
-        public async Task<ReceitasFlavorizantesInsumosModel> GetReceitaFlavorizanteByIdAsync(int id)
+        public async Task<ReceitasFlavorizantesModel> GetReceitaFlavorizanteByIdAsync(int id)
         {
             return await _repository.GetByIdAsync(id);
         }
@@ -39,7 +39,7 @@ namespace PeDJRMWinUI3UNO.Services
         /// <summary>
         /// Adiciona um novo flavorizante para uma receita.
         /// </summary>
-        public async Task AddReceitaFlavorizanteAsync(ReceitasFlavorizantesInsumosModel receitaFlavorizante)
+        public async Task AddReceitaFlavorizanteAsync(ReceitasFlavorizantesModel receitaFlavorizante)
         {
             await _repository.AddAsync(receitaFlavorizante);
         }
@@ -47,7 +47,7 @@ namespace PeDJRMWinUI3UNO.Services
         /// <summary>
         /// Atualiza um flavorizante de receita existente.
         /// </summary>
-        public async Task UpdateReceitaFlavorizanteAsync(ReceitasFlavorizantesInsumosModel receitaFlavorizante)
+        public async Task UpdateReceitaFlavorizanteAsync(ReceitasFlavorizantesModel receitaFlavorizante)
         {
             await _repository.UpdateAsync(receitaFlavorizante);
         }

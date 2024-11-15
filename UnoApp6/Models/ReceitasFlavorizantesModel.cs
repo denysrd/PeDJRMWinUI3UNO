@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using KeyAttribute = System.ComponentModel.DataAnnotations.KeyAttribute;
 
 namespace PeDJRMWinUI3UNO.Models
 {
@@ -7,7 +8,7 @@ namespace PeDJRMWinUI3UNO.Models
     /// Modelo para a tabela tbl_receitas_flavorizantes.
     /// </summary>
     [Table("tbl_receitas_flavorizantes")]
-    public class ReceitasFlavorizantesInsumosModel
+    public class ReceitasFlavorizantesModel
     {
         /// <summary>
         /// Identificador único do registro (id).
@@ -26,7 +27,7 @@ namespace PeDJRMWinUI3UNO.Models
         /// <summary>
         /// Propriedade de navegação para a versão da receita.
         /// </summary>
-        public virtual VersoesReceitasModel Versao_Receita { get; set; }
+        public virtual VersoesReceitasModel VersaoReceita { get; set; }
 
         /// <summary>
         /// Identificador do flavorizante associado (id_flavorizante).

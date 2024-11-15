@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using PeDJRMWinUI3UNO.Data;
 using PeDJRMWinUI3UNO.Models;
 
 namespace PeDJRMWinUI3UNO.Repositories
@@ -10,12 +11,12 @@ namespace PeDJRMWinUI3UNO.Repositories
     /// </summary>
     public class ReceitasInsumosRepository
     {
-        private readonly ApplicationDbContext _context;
+        private readonly AppDbContext _context;
 
         /// <summary>
         /// Construtor do repositório ReceitasInsumosRepository.
         /// </summary>
-        public ReceitasInsumosRepository(ApplicationDbContext context)
+        public ReceitasInsumosRepository(AppDbContext context)
         {
             _context = context;
         }

@@ -1,6 +1,7 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using KeyAttribute = System.ComponentModel.DataAnnotations.KeyAttribute;
 
 namespace PeDJRMWinUI3UNO.Models
 {
@@ -22,7 +23,7 @@ namespace PeDJRMWinUI3UNO.Models
         /// </summary>
         [ForeignKey("Receita")]
         [Column("id_receita")]
-        public int IdReceita { get; set; }
+        public int Id_Receita { get; set; }
 
         /// <summary>
         /// Propriedade de navegação para a tabela tbl_receitas.
@@ -45,6 +46,6 @@ namespace PeDJRMWinUI3UNO.Models
         /// Descrição do processo para a versão da receita.
         /// </summary>
         [Column("descricao_processo")]
-        public string DescricaoProcesso { get; set; }
+        public string Descricao_Processo { get; set; }
     }
 }
