@@ -14,6 +14,10 @@ namespace PeDJRMWinUI3UNO.Data
         public DbSet<TipoFormulacaoModel> TipoFormulacaoModel { get; set; }
         public DbSet<InsumosModel> InsumosModel { get; set; }
         public DbSet<FlavorizantesModel> FlavorizantesModel { get; set; }
+        public DbSet<ReceitasModel> ReceitasModel { get; set; }
+        public DbSet<VersoesReceitasModel> VersoesReceitasModel { get; set; }
+        public DbSet<ReceitasInsumosModel> ReceitasInsumosModel { get; set; }
+        public DbSet<ReceitasFlavorizantesInsumosModel> ReceitasFlavorizantesInsumosModel { get; set; }
 
         // Configuração condicional do DbContext
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
