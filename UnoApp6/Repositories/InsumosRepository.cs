@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using PeDJRMWinUI3UNO.Data;
 using PeDJRMWinUI3UNO.Models; // Certifique-se de incluir o namespace para os modelos
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -29,9 +30,17 @@ namespace PeDJRMWinUI3UNO.Repositories
         // Método para obter todos os insumos
         public async Task<List<InsumosModel>> ObterTodosAsync()
         {
-            using (var context = new AppDbContext(_dbContextOptions))
+            try
+            {
+                using (var context = new AppDbContext(_dbContextOptions))
             {
                 return await context.InsumosModel.ToListAsync();
+            }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Erro ao obter insumos: {ex.Message}");
+                return new List<InsumosModel>();
             }
         }
 

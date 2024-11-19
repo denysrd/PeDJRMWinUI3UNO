@@ -1,6 +1,6 @@
 using Microsoft.UI.Xaml.Data;
 // Namespace: PeDJRMWinUI3UNO.Converters
-namespace PeDJRMWinUI3UNO.Data;
+namespace PeDJRMWinUI3UNO.Converters;
 
 public class SituacaoConverter : IValueConverter
 {

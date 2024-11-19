@@ -10,6 +10,7 @@ using Microsoft.Extensions.Logging;
 using Uno.Extensions.Configuration;
 using PeDJRMWinUI3UNO.ViewModels;
 using PeDJRMWinUI3UNO.Views.Cadastros;
+using PeDJRMWinUI3UNO.Views.Cadastros.Receita;
 using PeDJRMWinUI3UNO.Configurations;
 namespace PeDJRMWinUI3UNO;
 
@@ -70,8 +71,9 @@ public partial class App : Application
     {
         views.Register(
             new ViewMap(ViewModel: typeof(ShellViewModel)),
-            new ViewMap<MainPage, MainViewModel>(),
-            new ViewMap<FlavorizantesView, FlavorizantesViewModel>() // Adiciona FlavorizantesView
+            new ViewMap<MainPage, MainViewModel>()
+           // new ViewMap<FlavorizantesView, FlavorizantesViewModel>(), // Adiciona FlavorizantesView
+            //new ViewMap<ReceitasView, ReceitasViewModel>() // Adiciona FlavorizantesView
         );
 
         routes.Register(
@@ -79,7 +81,7 @@ public partial class App : Application
                 Nested:
                 [
                     new("Main", View: views.FindByViewModel<MainViewModel>(), IsDefault: true),
-                    new("Flavorizantes", View: views.FindByViewModel<FlavorizantesViewModel>()) // Rota para FlavorizantesView
+                   // new("Flavorizantes", View: views.FindByViewModel<FlavorizantesViewModel>()) // Rota para FlavorizantesView                   
                 ]
             )
         );

@@ -1,6 +1,7 @@
 using Microsoft.UI.Xaml.Controls;
 using PeDJRMWinUI3UNO.Views;
 using PeDJRMWinUI3UNO.Views.Cadastros;
+using PeDJRMWinUI3UNO.Views.Cadastros.Receita;
 using System;
 
 namespace PeDJRMWinUI3UNO.Services
@@ -21,8 +22,8 @@ namespace PeDJRMWinUI3UNO.Services
             {
                 "HomePage" => typeof(HomePage),   // Agora usa HomePage em vez de MainPage
                 "CadastroPage" => typeof(CadastroPage),
-                "ReceitaPage" => typeof(ReceitaPage),
-                "FlavorizantesPage" => typeof(FlavorizantesView),
+                "ReceitasView" => typeof(ReceitasView),
+                "FlavorizantesPage" => typeof(FlavorizantesView),              
                 _ => null
             };
 

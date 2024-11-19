@@ -14,7 +14,7 @@ namespace PeDJRMWinUI3UNO.Data
         public DbSet<TipoFormulacaoModel> TipoFormulacaoModel { get; set; }
         public DbSet<InsumosModel> InsumosModel { get; set; }
         public DbSet<FlavorizantesModel> FlavorizantesModel { get; set; }
-        public DbSet<ReceitasModel> Receitas { get; set; }
+        public DbSet<ReceitasModel> ReceitasModel { get; set; }
         public DbSet<VersoesReceitasModel> VersoesReceitas { get; set; }
         public DbSet<ReceitasInsumosModel> ReceitasInsumos { get; set; }
         public DbSet<ReceitasFlavorizantesModel> ReceitasFlavorizantes { get; set; }
@@ -97,6 +97,16 @@ namespace PeDJRMWinUI3UNO.Data
                       .WithMany()
                       .HasForeignKey(e => e.Id_Fornecedor)
                       .OnDelete(DeleteBehavior.Restrict);
+            });
+
+            modelBuilder.Entity<ReceitasModel>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+                entity.Property(e => e.Codigo_Receita).IsRequired();
+                entity.Property(e => e.Nome_Receita).IsRequired();
+                entity.Property(e => e.Data).IsRequired();
+                entity.Property(e => e.Descricao_Processo).IsRequired();
+                
             });
         }
     }

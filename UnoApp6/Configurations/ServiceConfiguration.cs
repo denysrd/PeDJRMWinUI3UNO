@@ -34,6 +34,7 @@ namespace PeDJRMWinUI3UNO.Configurations
             services.AddTransient<TipoFormulacaoRepository>();
             services.AddTransient<InsumosRepository>();
             services.AddTransient<FlavorizantesRepository>();
+            services.AddTransient<ReceitasRepository>();
 
             // Registro de serviços de negócios para serem usados nas Views e ViewModels
             services.AddTransient<FornecedorService>();
@@ -41,6 +42,7 @@ namespace PeDJRMWinUI3UNO.Configurations
             services.AddTransient<TipoFormulacaoService>();
             services.AddTransient<InsumosService>();
             services.AddTransient<FlavorizantesService>();
+            services.AddTransient<ReceitasService>();
         }
     }
 }
