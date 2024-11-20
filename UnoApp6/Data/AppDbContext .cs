@@ -70,19 +70,7 @@ namespace PeDJRMWinUI3UNO.Data
                       .HasForeignKey(e => e.IdTipoIngrediente)
                       .OnDelete(DeleteBehavior.Restrict);
             });
-            modelBuilder.Entity<InsumosModel>(entity =>
-            {
-                entity.HasKey(e => e.Id_Insumo);
-                entity.Property(e => e.Nome).IsRequired();
-                entity.Property(e => e.Custo).HasColumnType("decimal(18,2)");
-
-                // Configuração da chave estrangeira para TipoIngrediente
-                entity.HasOne(e => e.TipoIngrediente)
-                      .WithMany()
-                      .HasForeignKey(e => e.IdTipoIngrediente)
-                      .OnDelete(DeleteBehavior.Restrict);
-            });
-
+            
             modelBuilder.Entity<FlavorizantesModel>(entity =>
             {
                 entity.HasKey(e => e.Id_Flavorizante);
@@ -101,12 +89,53 @@ namespace PeDJRMWinUI3UNO.Data
 
             modelBuilder.Entity<ReceitasModel>(entity =>
             {
-                entity.HasKey(e => e.Id);
-                entity.Property(e => e.Codigo_Receita).IsRequired();
-                entity.Property(e => e.Nome_Receita).IsRequired();
-                entity.Property(e => e.Data).IsRequired();
-                entity.Property(e => e.Descricao_Processo).IsRequired();
-                
+                entity.ToTable("Tbl_receitas");
+                entity.HasKey(r => r.Id);
+                entity.Property(r => r.Codigo_Receita).HasMaxLength(45).IsRequired();
+                entity.Property(r => r.Nome_Receita).HasMaxLength(45).IsRequired();
+                entity.Property(r => r.Data).IsRequired();
+                entity.Property(r => r.Descricao_Processo).HasMaxLength(1000);
+            });
+
+            modelBuilder.Entity<VersoesReceitasModel>(entity =>
+            {
+                entity.ToTable("tbl_versoes_receitas"); // Nome da tabela
+                entity.HasKey(v => v.Id); // Define a chave primária
+                entity.Property(v => v.Versao).IsRequired(); // Campo obrigatório
+                entity.Property(v => v.Data).IsRequired(); // Campo obrigatório
+                entity.Property(v => v.Descricao_Processo).HasMaxLength(1000); // Limite de caracteres
+
+                // Define o relacionamento com tbl_receitas
+                entity.HasOne(v => v.Receita)
+                      .WithMany() // Nenhuma coleção configurada no lado ReceitasModel
+                      .HasForeignKey(v => v.Id_Receita) // Chave estrangeira
+                      .OnDelete(DeleteBehavior.Cascade); // Comportamento ao excluir a receita
+            });
+
+            modelBuilder.Entity<ReceitasInsumosModel>(entity =>
+            {
+                entity.ToTable("tbl_receitas_insumos"); // Define o nome da tabela
+                entity.HasKey(ri => ri.Id); // Define a chave primária
+                entity.Property(ri => ri.Unidade_Medida).HasMaxLength(45); // Limite de caracteres para a unidade de medida
+                entity.Property(ri => ri.Quantidade).IsRequired(); // Campo obrigatório
+
+                // Relacionamento com tbl_versoes_receitas
+                entity.HasOne(ri => ri.VersaoReceita)
+                      .WithMany() // Sem coleção configurada em VersoesReceitasModel
+                      .HasForeignKey(ri => ri.Id_Versao_Receita)
+                      .OnDelete(DeleteBehavior.Cascade);
+
+                // Relacionamento com tbl_insumos
+                entity.HasOne(ri => ri.Insumo)
+                      .WithMany() // Sem coleção configurada em InsumosModel
+                      .HasForeignKey(ri => ri.Id_Insumo)
+                      .OnDelete(DeleteBehavior.Restrict);
+
+                // Relacionamento com tbl_flavorizantes
+                entity.HasOne(ri => ri.Flavorizante)
+                      .WithMany() // Sem coleção configurada em FlavorizantesModel
+                      .HasForeignKey(ri => ri.Id_Flavorizante)
+                      .OnDelete(DeleteBehavior.Restrict);
             });
         }
     }

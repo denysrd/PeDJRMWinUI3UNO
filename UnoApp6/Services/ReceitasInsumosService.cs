@@ -5,59 +5,58 @@ using PeDJRMWinUI3UNO.Repositories;
 
 namespace PeDJRMWinUI3UNO.Services
 {
-    /// <summary>
-    /// Serviço responsável pela lógica de negócios para insumos de receitas.
-    /// </summary>
+    // Serviço responsável por encapsular a lógica de negócios para receitas insumos
     public class ReceitasInsumosService
     {
-        private readonly ReceitasInsumosRepository _repository;
+        // Repositório de receitas insumos
+        private readonly IReceitasInsumosRepository _receitasInsumosRepository;
 
-        /// <summary>
-        /// Construtor do serviço ReceitasInsumosService.
-        /// </summary>
-        public ReceitasInsumosService(ReceitasInsumosRepository repository)
+        // Injeta o repositório no serviço
+        public ReceitasInsumosService(IReceitasInsumosRepository receitasInsumosRepository)
         {
-            _repository = repository;
+            _receitasInsumosRepository = receitasInsumosRepository;
         }
 
-        /// <summary>
-        /// Obtém todos os insumos de receitas cadastrados.
-        /// </summary>
-        public async Task<List<ReceitasInsumosModel>> GetAllReceitasInsumosAsync()
+        // Adiciona um novo insumo à receita
+        public async Task<int> AdicionarReceitaInsumoAsync(ReceitasInsumosModel receitaInsumo)
         {
-            return await _repository.GetAllAsync();
+            // Valida o ID da versão da receita
+            if (receitaInsumo.Id_Versao_Receita <= 0)
+            {
+                throw new ArgumentException("ID da versão da receita é obrigatório.");
+            }
+            
+            // Adiciona o registro no banco de dados
+            return await _receitasInsumosRepository.AddAsync(receitaInsumo);
         }
 
-        /// <summary>
-        /// Obtém um insumo de receita específico pelo ID.
-        /// </summary>
-        public async Task<ReceitasInsumosModel> GetReceitaInsumoByIdAsync(int id)
+        // Obtém um insumo de receita pelo ID
+        public async Task<ReceitasInsumosModel> ObterPorIdAsync(int id)
         {
-            return await _repository.GetByIdAsync(id);
+            return await _receitasInsumosRepository.GetByIdAsync(id);
         }
 
-        /// <summary>
-        /// Adiciona um novo insumo para uma receita.
-        /// </summary>
-        public async Task AddReceitaInsumoAsync(ReceitasInsumosModel receitaInsumo)
+        // Obtém todos os insumos de uma versão específica de receita
+        public async Task<IEnumerable<ReceitasInsumosModel>> ObterPorVersaoReceitaIdAsync(int idVersaoReceita)
         {
-            await _repository.AddAsync(receitaInsumo);
+            return await _receitasInsumosRepository.GetByVersaoReceitaIdAsync(idVersaoReceita);
         }
 
-        /// <summary>
-        /// Atualiza um insumo de receita existente.
-        /// </summary>
-        public async Task UpdateReceitaInsumoAsync(ReceitasInsumosModel receitaInsumo)
+        // Atualiza os dados de um insumo de receita
+        public async Task<bool> AtualizarReceitaInsumoAsync(ReceitasInsumosModel receitaInsumo)
         {
-            await _repository.UpdateAsync(receitaInsumo);
+            if (receitaInsumo.Id <= 0)
+            {
+                throw new ArgumentException("ID do insumo de receita é obrigatório.");
+            }
+
+            return await _receitasInsumosRepository.UpdateAsync(receitaInsumo);
         }
 
-        /// <summary>
-        /// Remove um insumo de receita pelo ID.
-        /// </summary>
-        public async Task DeleteReceitaInsumoAsync(int id)
+        // Remove um insumo de receita pelo ID
+        public async Task<bool> RemoverReceitaInsumoAsync(int id)
         {
-            await _repository.DeleteAsync(id);
+            return await _receitasInsumosRepository.DeleteAsync(id);
         }
     }
 }

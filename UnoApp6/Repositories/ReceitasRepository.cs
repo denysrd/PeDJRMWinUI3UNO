@@ -1,59 +1,78 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using PeDJRMWinUI3UNO.Data;
 using PeDJRMWinUI3UNO.Models;
 using PeDJRMWinUI3UNO.Data;
-using System.Diagnostics;
+using PeDJRMWinUI3UNO.Repositories;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using SkiaSharp;
 
-namespace PeDJRMWinUI3UNO.Repositories
+namespace PeDJRMWinUI3UNO
 {
-    /// Repositório responsável pelo acesso à tabela tbl_receitas.
-    public class ReceitasRepository
+    public class ReceitasRepository : IReceitasRepository
     {
-        private readonly DbContextOptions<AppDbContext> _dbContextOptions;
+        private readonly AppDbContext _dbContext;
 
-        /// Construtor do repositório ReceitasRepository.
-        public ReceitasRepository(DbContextOptions<AppDbContext> dbContextOptions)
+        public ReceitasRepository(AppDbContext dbContext)
         {
-            _dbContextOptions = dbContextOptions;
+            _dbContext = dbContext;
+        }
+                
+        public async Task<int> AddAsync(ReceitasModel receita)
+        {
+            _dbContext.ReceitasModel.Add(receita);
+            await _dbContext.SaveChangesAsync();
+            return receita.Id; // Retorna o ID gerado
+        }
+
+        public async Task<ReceitasModel> GetByIdAsync(int id)
+        {
+            return await _dbContext.ReceitasModel.FirstOrDefaultAsync(r => r.Id == id);
+        }
+
+        public async Task<ReceitasModel> ObterPorCodigoAsync(string codigoReceita)
+        {
+            return await _dbContext.ReceitasModel.FirstOrDefaultAsync(r => r.Codigo_Receita == codigoReceita);
+        }
+
+        public async Task<IEnumerable<ReceitasModel>> GetAllAsync()
+        {
+            return await _dbContext.ReceitasModel.ToListAsync();
+        }
+
+        public async Task<bool> UpdateAsync(ReceitasModel receita)
+        {
+            var receitaExistente = await GetByIdAsync(receita.Id);
+            if (receitaExistente == null)
+                return false;
+
+            receitaExistente.Codigo_Receita = receita.Codigo_Receita;
+            receitaExistente.Nome_Receita = receita.Nome_Receita;
+            receitaExistente.Data = receita.Data;
+            receitaExistente.Descricao_Processo = receita.Descricao_Processo;
+
+            _dbContext.ReceitasModel.Update(receitaExistente);
+            return await _dbContext.SaveChangesAsync() > 0;
+        }
+
+        public async Task<bool> DeleteAsync(int id)
+        {
+            var receita = await GetByIdAsync(id);
+            if (receita == null)
+                return false;
+
+            _dbContext.ReceitasModel.Remove(receita);
+            return await _dbContext.SaveChangesAsync() > 0;
         }
 
         // Método para obter o próximo ID disponível
         public async Task<int> ObterProximoIdReceitaAsync()
         {
-            using (var context = new AppDbContext(_dbContextOptions))
-            {
-                var ultimaReceita = await context.ReceitasModel.OrderByDescending(i => i.Id).FirstOrDefaultAsync();
+            
+                var ultimaReceita = await _dbContext.ReceitasModel.OrderByDescending(i => i.Id).FirstOrDefaultAsync();
                 return ultimaReceita?.Id + 1 ?? 1; // Se não houver registros, começa com 1
-            }
+            
         }
-        // Método para obter todos os insumos
-        public async Task<List<ReceitasModel>> ObterTodosAsync()
-        {
-            try
-            {
-                using (var context = new AppDbContext(_dbContextOptions))
-                {
-                    return await context.ReceitasModel.ToListAsync();
-                }
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine($"Erro ao obter Receitas: {ex.Message}");
-                return new List<ReceitasModel>();
-            }
-        }
-
-        // Método para encontrar um insumo pelo ID
-        public async Task<ReceitasModel> GetByIdAsync(int id)
-        {
-            using (var context = new AppDbContext(_dbContextOptions))
-            {
-                return await context.ReceitasModel.FindAsync(id);
-            }
-        }
-       
     }
 }

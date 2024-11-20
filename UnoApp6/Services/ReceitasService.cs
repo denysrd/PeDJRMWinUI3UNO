@@ -1,34 +1,40 @@
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using PeDJRMWinUI3UNO.Repositories;
 
-namespace PeDJRMWinUI3UNO.Services
+namespace PeDJRMWinUI3UNO
 {
-    /// Serviço responsável pela lógica de negócios para receitas.
     public class ReceitasService
     {
-        private readonly ReceitasRepository _repository;
-                
-        /// Construtor do serviço ReceitasService.
-        public ReceitasService(ReceitasRepository repository)
+        private readonly IReceitasRepository _receitasRepository;
+
+        public ReceitasService(IReceitasRepository receitasRepository)
         {
-            _repository = repository;
+            _receitasRepository = receitasRepository;
         }
 
-        /// Obtém todas as receitas cadastradas.
-        public async Task<List<ReceitasModel>> ObterTodosAsync()
+        public async Task<int> AdicionarReceitaAsync(ReceitasModel receita)
         {
-            return await _repository.ObterTodosAsync();
+            if (string.IsNullOrEmpty(receita.Codigo_Receita) || string.IsNullOrEmpty(receita.Nome_Receita))
+                throw new ArgumentException("Campos obrigatórios não preenchidos.");
+
+            var receitaExistente = await _receitasRepository.ObterPorCodigoAsync(receita.Codigo_Receita);
+            if (receitaExistente != null)
+                throw new Exception($"Receita com código {receita.Codigo_Receita} já existe.");
+
+            return await _receitasRepository.AddAsync(receita);
         }
 
-        /// Obtém uma receita específica pelo ID.
-        public async Task<ReceitasModel> GetReceitaByIdAsync(int id)
+        public async Task<IEnumerable<ReceitasModel>> ObterReceitasAsync()
         {
-            return await _repository.GetByIdAsync(id);
+            return await _receitasRepository.GetAllAsync();
         }
 
         public async Task<int> ObterProximoIdReceitaAsync()
         {
-            return await _repository.ObterProximoIdReceitaAsync();
+            return await _receitasRepository.ObterProximoIdReceitaAsync();
         }
-
+        // Outros métodos como Atualizar, Remover, etc.
     }
 }

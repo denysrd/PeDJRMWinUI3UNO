@@ -4,47 +4,34 @@ using KeyAttribute = System.ComponentModel.DataAnnotations.KeyAttribute;
 
 namespace PeDJRMWinUI3UNO.Models
 {
-    /// <summary>
-    /// Modelo para a tabela tbl_receitas_insumos.
-    /// </summary>
-    [Table("tbl_receitas_insumos")]
+    // Representa o modelo da tabela tbl_receitas_insumos
     public class ReceitasInsumosModel
     {
-        /// <summary>
-        /// Identificador único do registro (id).
-        /// </summary>
-        [Key]
-        [Column("id")]
+        // Chave primária da tabela
         public int Id { get; set; }
 
-        /// <summary>
-        /// Identificador da versão da receita associada (id_versao_receita).
-        /// </summary>
-        [ForeignKey("VersaoReceita")]
-        [Column("id_versao_receita")]
+        // Chave estrangeira para tbl_versoes_receitas (campo id)
         public int Id_Versao_Receita { get; set; }
 
-        /// <summary>
-        /// Propriedade de navegação para a versão da receita.
-        /// </summary>
-        public virtual VersoesReceitasModel VersaoReceita { get; set; }
-
-        /// <summary>
-        /// Identificador do insumo associado (id_insumo).
-        /// </summary>
-        [Column("id_insumo")]
+        // Chave estrangeira para tbl_insumos (campo id)
         public int Id_Insumo { get; set; }
 
-        /// <summary>
-        /// Unidade de medida do insumo (unidade_medida).
-        /// </summary>
-        [Column("unidade_medida")]
+        // Unidade de medida do insumo (exemplo: "kg", "g")
         public string Unidade_Medida { get; set; }
 
-        /// <summary>
-        /// Quantidade do insumo (quantidade).
-        /// </summary>
-        [Column("quantidade")]
-        public double Quantidade { get; set; }
+        // Quantidade do insumo na receita
+        public decimal Quantidade { get; set; }
+
+        // Chave estrangeira para tbl_flavorizantes (campo id), opcional
+        public int? Id_Flavorizante { get; set; }
+
+        // Propriedade de navegação para a versão da receita
+        public VersoesReceitasModel VersaoReceita { get; set; }
+
+        // Propriedade de navegação para o insumo
+        public InsumosModel Insumo { get; set; }
+
+        // Propriedade de navegação para o flavorizante
+        public FlavorizantesModel Flavorizante { get; set; }
     }
 }

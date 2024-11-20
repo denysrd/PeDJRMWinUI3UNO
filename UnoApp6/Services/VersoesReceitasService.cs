@@ -6,59 +6,53 @@ using PeDJRMWinUI3UNO.Repositories;
 
 namespace PeDJRMWinUI3UNO.Services
 {
-    /// <summary>
-    /// Serviço responsável pela lógica de negócios para versões de receitas.
-    /// </summary>
     public class VersoesReceitasService
     {
-        private readonly VersoesReceitasRepository _repository;
+        private readonly IVersoesReceitasRepository _versoesReceitasRepository; // Repositório de versões
 
-        /// <summary>
-        /// Construtor do serviço VersoesReceitasService.
-        /// </summary>
-        public VersoesReceitasService(VersoesReceitasRepository repository)
+        public VersoesReceitasService(IVersoesReceitasRepository versoesReceitasRepository)
         {
-            _repository = repository;
+            _versoesReceitasRepository = versoesReceitasRepository; // Injeta o repositório no serviço
         }
 
-        /// <summary>
-        /// Obtém todas as versões de receitas cadastradas.
-        /// </summary>
-        public async Task<List<VersoesReceitasModel>> GetAllVersoesReceitasAsync()
+        public async Task<int> AdicionarVersaoReceitaAsync(VersoesReceitasModel versaoReceita)
         {
-            return await _repository.GetAllAsync();
+            if (versaoReceita.Id_Receita <= 0)
+            {
+                throw new ArgumentException("ID da receita é obrigatório."); // Valida o ID da receita
+            }
+
+            if (versaoReceita.Versao <= 0)
+            {
+                throw new ArgumentException("A versão deve ser maior que zero."); // Valida o número da versão
+            }
+
+            return await _versoesReceitasRepository.AddAsync(versaoReceita); // Adiciona a versão ao banco
         }
 
-        /// <summary>
-        /// Obtém uma versão específica pelo ID.
-        /// </summary>
-        public async Task<VersoesReceitasModel> GetVersaoReceitaByIdAsync(int id)
+        public async Task<VersoesReceitasModel> ObterPorIdAsync(int id)
         {
-            return await _repository.GetByIdAsync(id);
+            return await _versoesReceitasRepository.GetByIdAsync(id); // Obtém uma versão pelo ID
         }
 
-        /// <summary>
-        /// Adiciona uma nova versão de receita.
-        /// </summary>
-        public async Task AddVersaoReceitaAsync(VersoesReceitasModel versaoReceita)
+        public async Task<IEnumerable<VersoesReceitasModel>> ObterPorReceitaIdAsync(int idReceita)
         {
-            await _repository.AddAsync(versaoReceita);
+            return await _versoesReceitasRepository.GetByReceitaIdAsync(idReceita); // Obtém todas as versões de uma receita
         }
 
-        /// <summary>
-        /// Atualiza uma versão de receita existente.
-        /// </summary>
-        public async Task UpdateVersaoReceitaAsync(VersoesReceitasModel versaoReceita)
+        public async Task<bool> AtualizarVersaoReceitaAsync(VersoesReceitasModel versaoReceita)
         {
-            await _repository.UpdateAsync(versaoReceita);
+            if (versaoReceita.Id <= 0)
+            {
+                throw new ArgumentException("ID da versão é obrigatório."); // Valida o ID da versão
+            }
+
+            return await _versoesReceitasRepository.UpdateAsync(versaoReceita); // Atualiza a versão no banco
         }
 
-        /// <summary>
-        /// Remove uma versão de receita pelo ID.
-        /// </summary>
-        public async Task DeleteVersaoReceitaAsync(int id)
+        public async Task<bool> RemoverVersaoReceitaAsync(int id)
         {
-            await _repository.DeleteAsync(id);
+            return await _versoesReceitasRepository.DeleteAsync(id); // Remove a versão pelo ID
         }
     }
 }

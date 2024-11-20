@@ -7,6 +7,7 @@ using Microsoft.UI.Xaml.Input;
 using System.ComponentModel;
 using Uno.Extensions;
 using Microsoft.Extensions.DependencyInjection;
+using PeDJRMWinUI3UNO.Models;
 
 namespace PeDJRMWinUI3UNO.Views.Cadastros.Receita
 {
@@ -21,10 +22,17 @@ namespace PeDJRMWinUI3UNO.Views.Cadastros.Receita
         private readonly InsumosService _insumoService;
         private readonly FlavorizantesService _flavorizanteService;
         private readonly ReceitasService _receitasService;
+        private readonly VersoesReceitasService _versoesReceitasService;
+        private readonly ReceitasInsumosService _receitasInsumosService;
 
+        
         public ObservableCollection<InsumosModel> Insumos { get; set; } = new ObservableCollection<InsumosModel>();
         public ObservableCollection<FlavorizantesModel> Flavorizantes { get; set; } = new ObservableCollection<FlavorizantesModel>();
         public ObservableCollection<ReceitasModel> Receitas { get; set; } = new ObservableCollection<ReceitasModel>();
+        public ObservableCollection<VersoesReceitasModel> VersoesReceitas { get; set; } = new ObservableCollection<VersoesReceitasModel>();
+        public ObservableCollection<ReceitasInsumosModel> ReceitasInsumos { get; set; } = new ObservableCollection<ReceitasInsumosModel>();
+
+
 
         public ObservableCollection<ItemModel> ItensReceita { get; set; } = new ObservableCollection<ItemModel>();
         public ObservableCollection<ItemModel> ItensDisponiveis { get; set; } = new ObservableCollection<ItemModel>();
@@ -36,6 +44,8 @@ namespace PeDJRMWinUI3UNO.Views.Cadastros.Receita
             _insumoService = (InsumosService?)App.Services.GetService(typeof(InsumosService));
             _flavorizanteService = (FlavorizantesService)App.Services.GetService(typeof(FlavorizantesService));
             _receitasService = (ReceitasService)App.Services.GetService(typeof(ReceitasService));
+            _versoesReceitasService = (VersoesReceitasService)App.Services.GetService(typeof(VersoesReceitasService));
+            _receitasInsumosService = (ReceitasInsumosService)App.Services.GetService(typeof(ReceitasInsumosService));
 
             if (_insumoService == null || _flavorizanteService == null || _receitasService == null)
             {
@@ -47,6 +57,94 @@ namespace PeDJRMWinUI3UNO.Views.Cadastros.Receita
             _ = CarregarItensDisponiveisAsync();
             AdicionarLinhaVazia();           
         }
+
+        private async void SalvarReceita_Click(object sender, RoutedEventArgs e)
+        {
+            await SalvarReceitaAsync();
+        }
+
+        private async Task SalvarReceitaAsync()
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(NomeReceitaTextBox.Text))
+                {
+                    await MostrarDialogoAviso("O nome da receita é obrigatório.");
+                    return;
+                }
+
+                var receita = new ReceitasModel
+                {
+                    Codigo_Receita = CodigoReceitaTextBox.Text,
+                    Nome_Receita = NomeReceitaTextBox.Text,
+                    Data = DataReceitaPicker.Date.DateTime,
+                    Descricao_Processo = DescricaoReceitaTextBox.Text
+                };
+
+                var receitaId = await _receitasService.AdicionarReceitaAsync(receita);
+
+                var versaoReceita = new VersoesReceitasModel
+                {
+                    Id_Receita = receitaId,
+                    Versao = 1,
+                    Data = DataReceitaPicker.Date.DateTime,
+                    Descricao_Processo = DescricaoReceitaTextBox.Text
+                };
+
+                var versaoReceitaId = await _versoesReceitasService.AdicionarVersaoReceitaAsync(versaoReceita);
+
+                foreach (var item in ItensReceita.Where(i => !string.IsNullOrEmpty(i.Nome)))
+                {
+                    var receitaInsumo = new ReceitasInsumosModel
+                    {
+                        Id_Versao_Receita = versaoReceitaId,
+                        Id_Insumo = item.Idinsumo,
+                        Unidade_Medida = item.UnidadeMedida,
+                        Quantidade = item.Quantidade,
+                        Id_Flavorizante = item.Idflavorizante
+                    };
+
+                    await _receitasInsumosService.AdicionarReceitaInsumoAsync(receitaInsumo);
+                }
+
+                await MostrarDialogoAviso("Receita salva com sucesso!");
+                // Limpa os campos da tela
+                LimparCampos();
+            }
+            catch (Exception ex)
+            {
+                await MostrarDialogoAviso($"Erro ao salvar a receita: {ex.Message}");
+            }
+        }
+
+        private async void LimparCampos_Click(object sender, RoutedEventArgs e)
+        {
+            LimparCampos();
+        }
+        
+
+        private async void LimparCampos()
+        {
+            // Limpa os campos de texto e reseta os controles
+            NomeReceitaTextBox.Text = string.Empty;
+            DescricaoReceitaTextBox.Text = string.Empty;
+            DataReceitaPicker.Date = DateTimeOffset.Now;
+
+            // Gera um novo código para a receita
+            CodigoReceitaTextBox.Text = await GerarCodigoReceitaAsync();
+
+            // Limpa a lista de itens e adiciona uma linha vazia
+            ItensReceita.Clear();
+            AdicionarLinhaVazia();
+
+            // Reseta o valor do peso total da amostra
+            pesoTotalAmostra = 0;
+        }
+
+
+
+
+
 
         public async Task<string> GerarCodigoReceitaAsync()
         {           
@@ -179,7 +277,9 @@ namespace PeDJRMWinUI3UNO.Views.Cadastros.Receita
                 ItensDisponiveis.Add(new ItemModel
                 {
                     CodigoInterno = insumo.Codigo_Interno,
-                    Nome = insumo.Nome
+                    Nome = insumo.Nome, 
+                    Idinsumo = insumo.Id_Insumo
+
                 });
             }
 
@@ -190,7 +290,8 @@ namespace PeDJRMWinUI3UNO.Views.Cadastros.Receita
                 ItensDisponiveis.Add(new ItemModel
                 {
                     CodigoInterno = flavorizante.Codigo_Interno,
-                    Nome = flavorizante.Nome
+                    Nome = flavorizante.Nome,
+                    Idflavorizante = flavorizante.Id_Flavorizante
                 });
             }
 
@@ -269,14 +370,15 @@ namespace PeDJRMWinUI3UNO.Views.Cadastros.Receita
                 currentItem.UnidadeMedida = "g"; // Unidade padrão ou conforme necessidade
                 currentItem.Quantidade = 0; // Inicializa para edição
                 currentItem.Porcentagem = 0; // Inicializa para edição
-
+                currentItem.Idflavorizante = selectedItem.Idflavorizante;
+                currentItem.Idinsumo = selectedItem.Idinsumo;
                 // Atualiza a interface para refletir as alterações
                 DispatcherQueue.TryEnqueue(() =>
                 {
                     ReceitaListView.UpdateLayout();
                 });
 
-                Debug.WriteLine($"Linha preenchida: Código Interno: {currentItem.CodigoInterno}, Nome: {currentItem.Nome}");
+                Debug.WriteLine($"Linha preenchida: Código Interno: {currentItem.CodigoInterno}, Nome: {currentItem.Nome}, INSUMO: {selectedItem.Idinsumo}, FLAVORIZANTE: {selectedItem.Idflavorizante}");
             }
 
             // Verifica se a última linha está vazia antes de adicionar outra

@@ -17,7 +17,7 @@
             <TextBlock Text="Cabeçalho da Receita" FontSize="18" Margin="0,0,0,16" FontWeight="Bold" />
 
             <!-- Nome e Código Receita -->
-            <StackPanel Orientation="Horizontal" Spacing="8">
+            <StackPanel Orientation="Horizontal"  HorizontalAlignment="Stretch" Spacing="8">
                 <TextBlock Text="Nome da Receita:" Margin="5" VerticalAlignment="Center" />
                 <TextBox x:Name="NomeReceitaTextBox" Margin="5" VerticalAlignment="Center" />
                 <TextBlock Text="Código Receita:" Margin="5" VerticalAlignment="Center" />
@@ -27,7 +27,7 @@
             </StackPanel>
 
             <!-- Data e Descrição -->
-            <StackPanel>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
                 <TextBlock Text="Data:" Margin="5" VerticalAlignment="Center" />
                 <DatePicker x:Name="DataReceitaPicker" Margin="5" VerticalAlignment="Center" />
                 <!-- ComboBox para Unidade de Medida -->
@@ -128,7 +128,28 @@
                                FontWeight="Bold" 
                                HorizontalAlignment="Center" 
                                VerticalAlignment="Center" />
+
+
                 </Grid>
+                <!-- Botão de Salvar -->
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+
+                    <Button x:Name="LimparCamposButton"
+                         Content="Limpar"
+                         HorizontalAlignment="Right"
+                         VerticalAlignment="Bottom"
+                         Margin="10"
+                         Padding="10,5"
+                         Click="LimparCampos_Click"/>
+                <!-- Botão de Salvar -->
+                <Button x:Name="SalvarReceitaButton"
+                         Content="Salvar Receita"
+                         HorizontalAlignment="Right"
+                         VerticalAlignment="Bottom"
+                         Margin="10"
+                         Padding="10,5"
+                         Click="SalvarReceita_Click"/>
+                </StackPanel>
             </StackPanel>
         </StackPanel>
     </ScrollViewer>

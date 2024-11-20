@@ -7,70 +7,65 @@ using PeDJRMWinUI3UNO.Data;
 
 namespace PeDJRMWinUI3UNO.Repositories
 {
-    /// <summary>
-    /// Repositório responsável pelo acesso à tabela tbl_versoes_receitas.
-    /// </summary>
-    public class VersoesReceitasRepository
+    public class VersoesReceitasRepository : IVersoesReceitasRepository
     {
-        private readonly AppDbContext _context;
+        private readonly AppDbContext _dbContext; // Contexto do banco de dados
 
-        /// <summary>
-        /// Construtor do repositório.
-        /// </summary>
-        public VersoesReceitasRepository(AppDbContext context)
+        public VersoesReceitasRepository(AppDbContext dbContext)
         {
-            _context = context;
+            _dbContext = dbContext; // Injeta o contexto no repositório
         }
 
-        /// <summary>
-        /// Obtém todas as versões de receitas.
-        /// </summary>
-        public async Task<List<VersoesReceitasModel>> GetAllAsync()
+        public async Task<int> AddAsync(VersoesReceitasModel versaoReceita)
         {
-            return await _context.VersoesReceitas
-                .Include(v => v.Receita) // Inclui os dados da receita associada.
-                .ToListAsync();
+            _dbContext.VersoesReceitas.Add(versaoReceita); // Adiciona a versão ao DbSet
+            await _dbContext.SaveChangesAsync(); // Salva as alterações no banco de dados
+            return versaoReceita.Id; // Retorna o ID gerado
         }
 
-        /// <summary>
-        /// Obtém uma versão específica pelo ID.
-        /// </summary>
         public async Task<VersoesReceitasModel> GetByIdAsync(int id)
         {
-            return await _context.VersoesReceitas
-                .Include(v => v.Receita)
+            // Obtém uma versão pelo ID, incluindo dados da receita associada
+            return await _dbContext.VersoesReceitas
+                .Include(v => v.Receita) // Inclui a entidade relacionada, se necessário
                 .FirstOrDefaultAsync(v => v.Id == id);
         }
 
-        /// <summary>
-        /// Adiciona uma nova versão de receita.
-        /// </summary>
-        public async Task AddAsync(VersoesReceitasModel versaoReceita)
+        public async Task<IEnumerable<VersoesReceitasModel>> GetByReceitaIdAsync(int idReceita)
         {
-            _context.VersoesReceitas.Add(versaoReceita);
-            await _context.SaveChangesAsync();
+            // Obtém todas as versões associadas a uma receita específica
+            return await _dbContext.VersoesReceitas
+                .Where(v => v.Id_Receita == idReceita)
+                .ToListAsync();
         }
 
-        /// <summary>
-        /// Atualiza uma versão de receita existente.
-        /// </summary>
-        public async Task UpdateAsync(VersoesReceitasModel versaoReceita)
+        public async Task<bool> UpdateAsync(VersoesReceitasModel versaoReceita)
         {
-            _context.VersoesReceitas.Update(versaoReceita);
-            await _context.SaveChangesAsync();
-        }
-
-        /// <summary>
-        /// Remove uma versão de receita pelo ID.
-        /// </summary>
-        public async Task DeleteAsync(int id)
-        {
-            var versaoReceita = await _context.VersoesReceitas.FindAsync(id);
-            if (versaoReceita != null)
+            var versaoExistente = await GetByIdAsync(versaoReceita.Id); // Obtém a versão existente pelo ID
+            if (versaoExistente == null)
             {
-                _context.VersoesReceitas.Remove(versaoReceita);
-                await _context.SaveChangesAsync();
+                return false; // Retorna falso se a versão não for encontrada
             }
+
+            // Atualiza os campos
+            versaoExistente.Versao = versaoReceita.Versao;
+            versaoExistente.Data = versaoReceita.Data;
+            versaoExistente.Descricao_Processo = versaoReceita.Descricao_Processo;
+
+            _dbContext.VersoesReceitas.Update(versaoExistente); // Marca a entidade como atualizada
+            return await _dbContext.SaveChangesAsync() > 0; // Retorna true se a atualização for bem-sucedida
+        }
+
+        public async Task<bool> DeleteAsync(int id)
+        {
+            var versao = await GetByIdAsync(id); // Obtém a versão pelo ID
+            if (versao == null)
+            {
+                return false; // Retorna falso se a versão não for encontrada
+            }
+
+            _dbContext.VersoesReceitas.Remove(versao); // Remove a versão do DbSet
+            return await _dbContext.SaveChangesAsync() > 0; // Retorna true se a remoção for bem-sucedida
         }
     }
 }
