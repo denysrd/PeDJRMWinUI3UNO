@@ -12,6 +12,7 @@ using PeDJRMWinUI3UNO.ViewModels;
 using PeDJRMWinUI3UNO.Views.Cadastros;
 using PeDJRMWinUI3UNO.Views.Cadastros.Receita;
 using PeDJRMWinUI3UNO.Configurations;
+using LiveChartsCore;
 namespace PeDJRMWinUI3UNO;
 
 public partial class App : Application
@@ -38,6 +39,8 @@ public partial class App : Application
 
     protected async override void OnLaunched(LaunchActivatedEventArgs args)
     {
+       
+
         var builder = this.CreateBuilder(args)
             .UseToolkitNavigation()
             .Configure(host => host
@@ -47,8 +50,9 @@ public partial class App : Application
                 .UseLogging(configure: (context, logBuilder) =>
                 {
                     logBuilder
-                        .SetMinimumLevel(context.HostingEnvironment.IsDevelopment() ? LogLevel.Information : LogLevel.Warning)
-                        .CoreLogLevel(LogLevel.Warning);
+                        .SetMinimumLevel(LogLevel.Information) // Define o nível mínimo
+                        .AddConsole() // Adiciona saída no console
+                        .CoreLogLevel(LogLevel.Debug); // Logs do Uno Platform
                 }, enableUnoLogging: true)
                 .UseConfiguration()
                 .UseLocalization()
@@ -66,6 +70,7 @@ public partial class App : Application
 
         await builder.NavigateAsync<Shell>();
     }
+
 
     private static void RegisterRoutes(IViewRegistry views, IRouteRegistry routes)
     {

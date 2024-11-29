@@ -111,8 +111,10 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="CommunityToolkit.WinUI.UI.Controls.DataGrid" />
+    <PackageReference Include="CSharpMarkup.WinUI.LiveChartsCore.SkiaSharpView" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" />
     <PackageReference Include="Microsoft.Extensions.Hosting" />
+    <PackageReference Include="Microsoft.Extensions.Logging" />
     <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" />
     <PackageReference Include="Refit" />
   </ItemGroup>
@@ -169,5 +171,9 @@
   <ItemGroup>
     <AdditionalFiles Remove="Views\Cadastros\Receita\ReceitasView.xaml" />
   </ItemGroup>
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <GenerateConsoleOutput>true</GenerateConsoleOutput>
+</PropertyGroup>
   
 </Project>

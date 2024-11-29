@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using PeDJRMWinUI3UNO.Models;
+using Microsoft.Extensions.Logging;
 
 namespace PeDJRMWinUI3UNO.Data
 {
@@ -24,11 +25,22 @@ namespace PeDJRMWinUI3UNO.Data
         {
             if (!optionsBuilder.IsConfigured)
             {
-                // Usa uma configuração padrão se nenhuma configuração for passada
                 const string connectionString = "Server=localhost;Database=db_jrmsistema;User=root;Password=Neoo@@141189;";
-                optionsBuilder.UseMySql(connectionString, new MySqlServerVersion(new Version(8, 0, 21)));
+                optionsBuilder
+                    .UseMySql(connectionString, new MySqlServerVersion(new Version(8, 0, 02)))
+                    .UseLoggerFactory(LoggerFactoryInstance)
+                    .EnableSensitiveDataLogging() // Exibe os valores das consultas (use com cuidado)
+                    .EnableDetailedErrors()                    ; // Exibe detalhes adicionais sobre erros
             }
         }
+
+        // Define uma propriedade LoggerFactory para exibir logs
+        private static readonly ILoggerFactory LoggerFactoryInstance = LoggerFactory.Create(builder =>
+        {
+            builder
+                .AddConsole() // Adiciona logs ao console
+                .SetMinimumLevel(LogLevel.Information); // Define o nível mínimo de log
+        });
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -107,7 +119,7 @@ namespace PeDJRMWinUI3UNO.Data
 
                 // Define o relacionamento com tbl_receitas
                 entity.HasOne(v => v.Receita)
-                      .WithMany() // Nenhuma coleção configurada no lado ReceitasModel
+                      .WithMany(r => r.VersoesReceitas) // Uma receita pode ter muitas versões
                       .HasForeignKey(v => v.Id_Receita) // Chave estrangeira
                       .OnDelete(DeleteBehavior.Cascade); // Comportamento ao excluir a receita
             });
@@ -118,6 +130,8 @@ namespace PeDJRMWinUI3UNO.Data
                 entity.HasKey(ri => ri.Id); // Define a chave primária
                 entity.Property(ri => ri.Unidade_Medida).HasMaxLength(45); // Limite de caracteres para a unidade de medida
                 entity.Property(ri => ri.Quantidade).IsRequired(); // Campo obrigatório
+                entity.Property(ri => ri.Id_Insumo).HasColumnName("Id_Insumo");
+                entity.Property(ri => ri.Id_Flavorizante).HasColumnName("Id_Flavorizante");
 
                 // Relacionamento com tbl_versoes_receitas
                 entity.HasOne(ri => ri.VersaoReceita)
@@ -136,6 +150,28 @@ namespace PeDJRMWinUI3UNO.Data
                       .WithMany() // Sem coleção configurada em FlavorizantesModel
                       .HasForeignKey(ri => ri.Id_Flavorizante)
                       .OnDelete(DeleteBehavior.Restrict);
+            });
+
+            modelBuilder.Entity<InsumosModel>(entity =>
+            {
+                entity.ToTable("tbl_insumo");
+
+                entity.HasKey(i => i.Id_Insumo);
+
+                entity.Property(i => i.Id_Insumo).HasColumnName("id_insumo");
+                entity.Property(i => i.Nome).HasColumnName("nome");
+                entity.Property(i => i.Codigo_Interno).HasColumnName("codigo_interno");
+            });
+
+            modelBuilder.Entity<FlavorizantesModel>(entity =>
+            {
+                entity.ToTable("tbl_flavorizante");
+
+                entity.HasKey(f => f.Id_Flavorizante);
+
+                entity.Property(f => f.Id_Flavorizante).HasColumnName("id_flavorizante");
+                entity.Property(f => f.Nome).HasColumnName("nome");
+                entity.Property(f => f.Codigo_Interno).HasColumnName("codigo_interno");
             });
         }
     }

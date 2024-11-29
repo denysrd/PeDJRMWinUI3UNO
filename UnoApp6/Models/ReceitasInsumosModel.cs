@@ -12,10 +12,7 @@ namespace PeDJRMWinUI3UNO.Models
 
         // Chave estrangeira para tbl_versoes_receitas (campo id)
         public int Id_Versao_Receita { get; set; }
-
-        // Chave estrangeira para tbl_insumos (campo id)
-        public int Id_Insumo { get; set; }
-
+               
         // Unidade de medida do insumo (exemplo: "kg", "g")
         public string Unidade_Medida { get; set; }
 
@@ -25,13 +22,16 @@ namespace PeDJRMWinUI3UNO.Models
         // Chave estrangeira para tbl_flavorizantes (campo id), opcional
         public int? Id_Flavorizante { get; set; }
 
+        // Chave estrangeira para tbl_insumos (campo id)
+        public int? Id_Insumo { get; set; }
+
         // Propriedade de navegação para a versão da receita
-        public VersoesReceitasModel VersaoReceita { get; set; }
+        public VersoesReceitasModel? VersaoReceita { get; set; }
 
         // Propriedade de navegação para o insumo
-        public InsumosModel Insumo { get; set; }
+        public InsumosModel? Insumo { get; set; }
 
         // Propriedade de navegação para o flavorizante
-        public FlavorizantesModel Flavorizante { get; set; }
+        public FlavorizantesModel? Flavorizante { get; set; }
     }
 }

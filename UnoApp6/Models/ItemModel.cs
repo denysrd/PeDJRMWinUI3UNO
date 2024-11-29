@@ -1,121 +1,114 @@
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
-namespace PeDJRMWinUI3UNO.Models
+namespace PeDJRMWinUI3UNO.Models;
+
+public class ItemModel : INotifyPropertyChanged
 {
-    public class ItemModel : INotifyPropertyChanged
+    // Campos privados para armazenar os valores
+    private string _codigoInterno;
+    private string _nome;
+    private decimal _quantidade;
+    private string _unidadeMedida;
+    private decimal _porcentagem;
+    private int _idinsumo;
+    private int _idflavorizante;
+
+    // Construtor para inicializar os campos
+    public ItemModel()
     {
-        // Campo privado para armazenar o código interno
-        private string _codigoInterno;
+        _codigoInterno = string.Empty; // Inicializa com string vazia
+        _nome = string.Empty; // Inicializa com string vazia
+        _quantidade = 0; // Inicializa com 0
+        _unidadeMedida = string.Empty; // Inicializa com string vazia
+        _porcentagem = 0; // Inicializa com 0
+        _idinsumo = 0; // Inicializa com 0
+        _idflavorizante = 0; // Inicializa com 0
+    }
 
-        // Campo privado para armazenar o nome do item
-        private string _nome;
-
-        // Campo privado para armazenar a quantidade
-        private decimal _quantidade;
-
-        // Campo privado para armazenar a unidade de medida
-        private string _unidadeMedida;
-
-        // Campo privado para armazenar a porcentagem
-        private decimal _porcentagem;
-
-        // Campo privado para armazenar o ID do insumo
-        private int _idinsumo;
-
-        // Campo privado para armazenar o ID do flavorizante
-        private int _idflavorizante;
-
-        // Propriedade para o código interno (string)
-        public string CodigoInterno
+    // Propriedades públicas
+    public string CodigoInterno
+    {
+        get => _codigoInterno;
+        set
         {
-            get => _codigoInterno;
-            set
-            {
-                _codigoInterno = value;
-                OnPropertyChanged(); // Notifica mudanças na propriedade
-            }
+            _codigoInterno = value;
+            OnPropertyChanged(); // Notifica mudanças
         }
+    }
 
-        // Propriedade para o nome (string)
-        public string Nome
+    public string Nome
+    {
+        get => _nome;
+        set
         {
-            get => _nome;
-            set
-            {
-                _nome = value;
-                OnPropertyChanged(); // Notifica mudanças na propriedade
-            }
+            _nome = value;
+            OnPropertyChanged();
         }
+    }
 
-        // Propriedade para a quantidade (decimal)
-        public decimal Quantidade
+    public decimal Quantidade
+    {
+        get => _quantidade;
+        set
         {
-            get => _quantidade;
-            set
-            {
-                _quantidade = value;
-                OnPropertyChanged(); // Notifica mudanças na propriedade
-            }
+            _quantidade = value;
+            OnPropertyChanged();
         }
+    }
 
-        // Propriedade para a unidade de medida (string)
-        public string UnidadeMedida
+    public string UnidadeMedida
+    {
+        get => _unidadeMedida;
+        set
         {
-            get => _unidadeMedida;
-            set
-            {
-                _unidadeMedida = value;
-                OnPropertyChanged(); // Notifica mudanças na propriedade
-            }
+            _unidadeMedida = value;
+            OnPropertyChanged();
         }
+    }
 
-        // Propriedade para a porcentagem (decimal)
-        public decimal Porcentagem
+    public decimal Porcentagem
+    {
+        get => _porcentagem;
+        set
         {
-            get => _porcentagem;
-            set
-            {
-                _porcentagem = value;
-                OnPropertyChanged(); // Notifica mudanças na propriedade
-            }
+            _porcentagem = value;
+            OnPropertyChanged();
         }
+    }
 
-        // Propriedade para o ID do insumo (int)
-        public int Idinsumo
+    public int Idinsumo
+    {
+        get => _idinsumo;
+        set
         {
-            get => _idinsumo;
-            set
-            {
-                _idinsumo = value;
-                OnPropertyChanged(); // Notifica mudanças na propriedade
-            }
+            _idinsumo = value;
+            OnPropertyChanged();
         }
+    }
 
-        // Propriedade para o ID do flavorizante (int)
-        public int Idflavorizante
+    public int Idflavorizante
+    {
+        get => _idflavorizante;
+        set
         {
-            get => _idflavorizante;
-            set
-            {
-                _idflavorizante = value;
-                OnPropertyChanged(); // Notifica mudanças na propriedade
-            }
+            _idflavorizante = value;
+            OnPropertyChanged();
         }
+    }
 
-        // Evento para notificar mudanças nas propriedades
-        public event PropertyChangedEventHandler PropertyChanged;
+    // Evento para notificar mudanças nas propriedades
+    public event PropertyChangedEventHandler? PropertyChanged;
 
-        // Método auxiliar para disparar o evento de mudança de propriedade
-        protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
+    // Método auxiliar para disparar o evento de mudança de propriedade
+    protected void OnPropertyChanged([CallerMemberName] string? propertyName = null)
+    {
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+    }
 
-        // Sobrescrita para exibir o nome no lugar do objeto na interface
-        public override string ToString()
-        {
-            return Nome; // Retorna o nome do item
-        }
+    // Sobrescrita para exibir o nome na interface
+    public override string ToString()
+    {
+        return Nome;
     }
 }
