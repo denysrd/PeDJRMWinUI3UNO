@@ -6,6 +6,7 @@ using PeDJRMWinUI3UNO.Models;
 using PeDJRMWinUI3UNO.Services;
 using Microsoft.Extensions.DependencyInjection;
 using System.Diagnostics;
+using System;
 
 namespace PeDJRMWinUI3UNO.Views.Cadastros.Receita;
 
@@ -14,9 +15,14 @@ public sealed partial class ReceitasView : Page
 {
     // Coleção para armazenar receitas carregadas
     public ObservableCollection<ReceitasModel> Receitas { get; set; } = new ObservableCollection<ReceitasModel>();
+    // Coleções para os itens da receita e itens disponíveis.
+    public ObservableCollection<ItemModel> ItensReceita { get; set; } = new ObservableCollection<ItemModel>();
+    // Coleções para os itens da receita e itens disponíveis.
+    public ObservableCollection<ReceitasInsumosModel> ReceitasInsumosModels { get; set; } = new ObservableCollection<ReceitasInsumosModel>();
 
-    // Referência ao serviço de receitas
+    // Serviços
     private readonly ReceitasService _receitasService;
+    private readonly ReceitasInsumosService _receitasInsumoService;
 
     public ReceitasView()
     {
@@ -28,13 +34,63 @@ public sealed partial class ReceitasView : Page
         // Obtém o serviço de receitas do contêiner de injeção de dependência
         _receitasService = App.Services.GetService<ReceitasService>()
             ?? throw new InvalidOperationException("O serviço ReceitasService não foi encontrado.");
+        // Obtém o serviço de receitas do contêiner de injeção de dependência
+        _receitasInsumoService = App.Services.GetService<ReceitasInsumosService>()
+            ?? throw new InvalidOperationException("O serviço ReceitasInsumosService não foi encontrado.");
+
 
         // Carrega as receitas ao inicializar
         _ = CarregarReceitasAsync();
     }
 
-    /// Carrega todas as receitas e suas versões
-    /// Carrega todas as receitas e suas versões do banco de dados
+
+
+    private async void VersaoExpanding(object sender, object e)
+    {
+        // Adiciona um atraso de 500ms antes de executar o restante da lógica
+        await Task.Delay(500);
+        try
+            {
+            // Verifica se o sender é um Expander e se o DataContext está correto
+            if (sender is Expander expander && expander.Tag is VersoesReceitasModel versao)
+            {                
+                // Verifica se os itens já foram carregados para evitar recarregar
+                if (versao.Itens != null && versao.Itens.Any())
+                    {
+                        Debug.WriteLine($"Itens já carregados para a versão {versao.Versao}. Ignorando recarregamento.");
+                        return;
+                    }
+                Debug.WriteLine($"Itens carregados para a versão {versao.Versao}: {versao.Itens?.Count ?? 0}");
+
+                // Busca os insumos da versão pelo serviço
+                var receitasInsumos = await _receitasInsumoService.ObterPorVersaoReceitaIdAsync(versao.Id);
+
+                    // Mapeia os insumos para o modelo ItemModel
+                    var itens = receitasInsumos.Select(insumo => new ItemModel
+                    {
+                        CodigoInterno = insumo.Insumo?.Codigo_Interno ?? insumo.Flavorizante?.Codigo_Interno ?? "N/A",
+                        Nome = insumo.Insumo?.Nome ?? insumo.Flavorizante?.Nome ?? "Sem nome",
+                        Quantidade = insumo.Quantidade,                      
+                        Idinsumo = insumo.Id_Insumo ?? 0, // Atribui 0 se for nulo
+                        Idflavorizante = insumo.Id_Flavorizante ?? 0 // Atribui 0 se for nulo
+                    }).ToList();
+
+                    // Atualiza a propriedade de itens da versão
+                    versao.Itens = new ObservableCollection<ItemModel>(itens);
+                    Debug.WriteLine($"Itens carregados para a versão {versao.Versao}: {itens.Count}");
+                }
+                else
+                {
+                    Debug.WriteLine("Expander ou DataContext inválido.");
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Erro ao carregar itens para a versão: {ex.Message}");
+                await MostrarDialogoAviso($"Erro ao carregar itens: {ex.Message}");
+            }       
+    }
+
     private async Task CarregarReceitasAsync()
     {
         try
@@ -50,6 +106,35 @@ public sealed partial class ReceitasView : Page
             {
                 // Obter as versões relacionadas à receita
                 var versoes = await _receitasService.ObterVersoesReceitaAsync(receita.Id);
+
+                // Para cada versão, carregar os itens associados
+                foreach (var versao in versoes)
+                {
+                    try
+                    {
+                        // Busca os insumos da versão pelo serviço
+                        var receitasInsumos = await _receitasInsumoService.ObterPorVersaoReceitaIdAsync(versao.Id);
+
+                        // Mapeia os insumos para o modelo ItemModel
+                        var itens = receitasInsumos.Select(insumo => new ItemModel
+                        {
+                            CodigoInterno = insumo.Insumo?.Codigo_Interno ?? insumo.Flavorizante?.Codigo_Interno ?? "N/A",
+                            Nome = insumo.Insumo?.Nome ?? insumo.Flavorizante?.Nome ?? "Sem nome",
+                            Quantidade = insumo.Quantidade,
+                            Idinsumo = insumo.Id_Insumo ?? 0, // Atribui 0 se for nulo
+                            Idflavorizante = insumo.Id_Flavorizante ?? 0, // Atribui 0 se for nulo
+                            UnidadeMedida = insumo.Unidade_Medida // Campo adicionado
+                        }).ToList();
+
+                        // Atualiza a propriedade de itens da versão
+                        versao.Itens = new ObservableCollection<ItemModel>(itens);
+                        Debug.WriteLine($"Itens carregados para a versão {versao.Versao}: {itens.Count}");
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine($"Erro ao carregar itens para a versão {versao.Versao}: {ex.Message}");
+                    }
+                }
 
                 // Adiciona as versões à propriedade da receita
                 receita.VersoesReceitas = new ObservableCollection<VersoesReceitasModel>(versoes);
@@ -71,7 +156,6 @@ public sealed partial class ReceitasView : Page
             await MostrarDialogoAviso($"Erro ao carregar receitas: {ex.Message}");
         }
     }
-
 
 
     private async Task MostrarDialogoAviso(string mensagem)
@@ -121,8 +205,96 @@ public sealed partial class ReceitasView : Page
         Frame.Navigate(typeof(ReceitaPage));
     }
 
+    
+
+    /// Edita uma receita ou versão selecionada
+    private void OnEditButtonClick(object sender, RoutedEventArgs e)
+    {
+        if (sender is Button button && button.Tag is VersoesReceitasModel versaoParaEditar)
+        {
+            Frame.Navigate(typeof(ReceitaPage), versaoParaEditar);
+        }
+    }
+
+    /// Exclui uma receita inteira
+    private async void ExcluirReceitaCompleta_Click(object sender, RoutedEventArgs e)
+    {
+        if (sender is Button button && button.Tag is ReceitasModel receitaParaExcluir)
+        {
+            // Confirmar exclusão
+            var dialog = new ContentDialog
+            {
+                Title = "Excluir Receita",
+                Content = $"Tem certeza de que deseja excluir a receita '{receitaParaExcluir.Nome_Receita}' e todas as suas versões?",
+                PrimaryButtonText = "Excluir",
+                CloseButtonText = "Cancelar",
+                XamlRoot = this.XamlRoot
+            };
+
+            var resultado = await dialog.ShowAsync();
+            if (resultado == ContentDialogResult.Primary)
+            {
+                try
+                {
+                    // Remove a receita utilizando o serviço
+                    await _receitasService.RemoverReceitaComVersoesAsync(receitaParaExcluir.Id);
+
+                    // Recarrega as receitas após a exclusão
+                    await CarregarReceitasAsync();
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine($"Erro ao excluir receita: {ex.Message}");
+                    await MostrarDialogoAviso($"Erro ao excluir receita: {ex.Message}");
+                }
+            }
+        }
+    }
+
+
+
+    private void OnCopiarButtonClick(object sender, RoutedEventArgs e)
+    {
+        if (sender is Button button && button.Tag is VersoesReceitasModel versaoSelecionada)
+        {
+            // Navega para a página ReceitaPage com os dados da versão a ser copiada
+            CopiarReceita(versaoSelecionada);
+        }
+    }
+
+    private void CopiarReceita(VersoesReceitasModel versaoSelecionada)
+    {
+        if (versaoSelecionada == null)
+        {
+            Debug.WriteLine("Nenhuma versão selecionada para copiar.");
+            return;
+        }
+
+        try
+        {
+            // Navega para ReceitaPage, sinalizando que é uma cópia
+            var parametrosCopia = new ReceitasModel
+            {
+                Id = versaoSelecionada.Id_Receita,
+                Nome_Receita = string.Empty, // Nome será inserido pelo usuário
+                Codigo_Receita = string.Empty, // Gerará um novo código
+                Data = DateTime.Now, // Data atual para a cópia
+                Descricao_Processo = string.Empty // Limpa descrição para nova entrada
+            };
+
+            Frame.Navigate(typeof(ReceitaPage), parametrosCopia);
+            Debug.WriteLine($"Navegando para copiar a receita com ID {versaoSelecionada.Id_Receita}.");
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"Erro ao copiar receita: {ex.Message}");
+        }
+    }
+
+
+
     /// Exclui a receita ou versão selecionada
-    private async void ExcluirReceita_Click(object sender, RoutedEventArgs e)
+    private async void ExcluirVersao_Click(object sender, RoutedEventArgs e)
     {
         if (sender is Button button && button.Tag is VersoesReceitasModel versaoParaExcluir)
         {
@@ -146,12 +318,5 @@ public sealed partial class ReceitasView : Page
         }
     }
 
-    /// Edita uma receita ou versão selecionada
-    private void OnEditButtonClick(object sender, RoutedEventArgs e)
-    {
-        if (sender is Button button && button.Tag is VersoesReceitasModel versaoParaEditar)
-        {
-            Frame.Navigate(typeof(ReceitaPage), versaoParaEditar);
-        }
-    }
+
 }

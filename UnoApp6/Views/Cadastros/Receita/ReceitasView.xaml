@@ -16,7 +16,7 @@
         <converters:DateFormatConverter x:Key="DateFormatConverter" />
     </Page.Resources>
 
-    <!-- Define um layout principal com rolagem -->
+    <!-- Define o layout principal com rolagem -->
     <ScrollViewer VerticalScrollBarVisibility="Auto">
         <Grid Padding="24">
             <StackPanel Spacing="20">
@@ -38,72 +38,130 @@
                 <!-- Campo de busca para filtrar receitas -->
                 <TextBox PlaceholderText="Pesquisar receitas..." Margin="0,0,0,20" TextChanged="OnSearchTextChanged" />
 
-                <!-- Títulos das colunas principais -->
-                <Grid Margin="0,0,0,10">
+                <!-- Títulos das colunas -->
+                <Grid Background="#E5E5E5" Padding="10" CornerRadius="4" >
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="2*" />
-                        <ColumnDefinition Width="1*" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
-                    <!-- Título da coluna Nome Receita -->
-                    <TextBlock Grid.Column="0" Text="Nome Receita" FontWeight="Bold" />
-                    <!-- Título da coluna Código Receita -->
-                    <TextBlock Grid.Column="1" Text="Código Receita" FontWeight="Bold" HorizontalAlignment="Right" />
+                    <!-- Títulos -->
+                    <TextBlock Grid.Column="0" Text="Nome Receita" FontWeight="Bold" HorizontalAlignment="Center" />
+                    <TextBlock Grid.Column="1" Text="Código Receita" FontWeight="Bold" HorizontalAlignment="Center" />
+                    <TextBlock Grid.Column="2" Text="Excluir" FontWeight="Bold" HorizontalAlignment="Center" />
                 </Grid>
 
-                <!-- Listagem de receitas e suas versões -->
+                <!-- Listagem de receitas -->
                 <ItemsRepeater x:Name="ReceitasRepeater" ItemsSource="{x:Bind Receitas, Mode=OneWay}">
                     <ItemsRepeater.ItemTemplate>
                         <DataTemplate x:DataType="models:ReceitasModel">
-                            <!-- Expander para cada receita -->
-                            <muxc:Expander Header="{x:Bind}" HorizontalAlignment="Stretch" Background="#F5F5F5" Margin="0,5">
-                                <!-- Define o layout do cabeçalho do expander -->
+                            <!-- Cada receita é representada por um Expander -->
+                            <muxc:Expander Header="{x:Bind}" HorizontalAlignment="Stretch"  Background="#F5F5F5">
+                                <!-- Cabeçalho do Expander para a receita -->
                                 <muxc:Expander.HeaderTemplate>
                                     <DataTemplate x:DataType="models:ReceitasModel">
                                         <Grid Padding="10">
                                             <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="2*" />
-                                                <ColumnDefinition Width="1*" />
+                                                <ColumnDefinition Width="*" />
+                                                <ColumnDefinition Width="*" />
+                                                <ColumnDefinition Width="*" />
                                             </Grid.ColumnDefinitions>
-                                            <!-- Exibe o Nome da Receita -->
-                                            <TextBlock Grid.Column="0" Text="{x:Bind Nome_Receita}" />
-                                            <!-- Exibe o Código da Receita -->
-                                            <TextBlock Grid.Column="1" Text="{x:Bind Codigo_Receita}" HorizontalAlignment="Right" />
+                                            <!-- Nome da receita -->
+                                            <TextBlock Grid.Column="0" Text="{x:Bind Nome_Receita}" HorizontalAlignment="Center" />
+                                            <!-- Código da receita -->
+                                            <TextBlock Grid.Column="1" Text="{x:Bind Codigo_Receita}" HorizontalAlignment="Center" Margin="40,0,0,0"/>
+                                            <!-- Botão de excluir receita -->
+                                            <Button Grid.Column="2" Content="Excluir" Click="ExcluirReceitaCompleta_Click" Tag="{x:Bind}" HorizontalAlignment="Center" Margin="100,0,0,0"/>
                                         </Grid>
                                     </DataTemplate>
                                 </muxc:Expander.HeaderTemplate>
-                                <!-- Conteúdo interno do expander: Lista de versões -->
+                                <!-- Conteúdo do Expander: lista de versões -->
                                 <StackPanel>
-                                    <!-- Títulos das colunas internas -->
-                                    <Grid Margin="0,10,0,5">
+
+                                    <!-- Títulos das colunas -->
+                                    <Grid Background="#E5E5E5" Padding="10" CornerRadius="4" >
                                         <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="1*" />
-                                            <ColumnDefinition Width="1*" />
-                                            <ColumnDefinition Width="Auto" />
-                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="*" />
                                         </Grid.ColumnDefinitions>
-                                        <TextBlock Grid.Column="0" Text="Versão" FontWeight="Bold" />
-                                        <TextBlock Grid.Column="1" Text="Data" FontWeight="Bold" />
+                                        <!-- Títulos -->
+                                        <TextBlock Grid.Column="0" Text="Versão" FontWeight="Bold" HorizontalAlignment="Center" Margin="20,0,0,0"/>
+                                        <TextBlock Grid.Column="1" Text="Data" FontWeight="Bold" HorizontalAlignment="Center" />
+                                        <TextBlock Grid.Column="2" Text="Editar" FontWeight="Bold" HorizontalAlignment="Center" />
+                                        <TextBlock Grid.Column="3" Text="Copiar" FontWeight="Bold" HorizontalAlignment="Center" />
+                                        <TextBlock Grid.Column="4" Text="Excluir" FontWeight="Bold" HorizontalAlignment="Center" />
                                     </Grid>
-                                    <!-- Iteração das versões da receita -->
+
+                                    <!-- Cada versão é um Expander dentro do Expander da receita -->
                                     <ItemsRepeater ItemsSource="{x:Bind VersoesReceitas}">
                                         <ItemsRepeater.ItemTemplate>
                                             <DataTemplate x:DataType="models:VersoesReceitasModel">
-                                                <Grid Margin="0,5,0,0" Padding="10" Background="#FFFFFF" CornerRadius="4">
-                                                    <Grid.ColumnDefinitions>
-                                                        <ColumnDefinition Width="1*" />
-                                                        <ColumnDefinition Width="1*" />
-                                                        <ColumnDefinition Width="Auto" />
-                                                        <ColumnDefinition Width="Auto" />
-                                                    </Grid.ColumnDefinitions>
-                                                    <!-- Exibe a versão da receita -->
-                                                    <TextBlock Grid.Column="0" Text="{Binding Versao}" />
-                                                    <!-- Exibe a data formatada -->
-                                                    <TextBlock Grid.Column="1" Text="{Binding Data, Converter={StaticResource DateFormatConverter}}" />
-                                                    <!-- Botão para editar a versão -->
-                                                    <Button Grid.Column="2" Content="Editar" Click="OnEditButtonClick" Tag="{Binding}" Margin="10,0,0,0" />
-                                                    <!-- Botão para excluir a versão -->
-                                                    <Button Grid.Column="3" Content="Excluir" Click="ExcluirReceita_Click" Tag="{Binding}" Margin="10,0,0,0" />
-                                                </Grid>
+                                                <muxc:Expander Header="{x:Bind}" DataContext="{Binding}" Tag="{x:Bind}" HorizontalAlignment="Stretch" Expanding="VersaoExpanding" Background="#FFFFFF" >
+                                                    <!-- Cabeçalho do Expander para a versão -->
+                                                    <muxc:Expander.HeaderTemplate>
+                                                        <DataTemplate x:DataType="models:VersoesReceitasModel">
+                                                            <Grid Padding="10">
+                                                                <Grid.ColumnDefinitions>
+                                                                    <ColumnDefinition Width="*" />
+                                                                    <ColumnDefinition Width="*" />
+                                                                    <ColumnDefinition Width="*" />
+                                                                    <ColumnDefinition Width="*" />
+                                                                    <ColumnDefinition Width="*" />
+                                                                </Grid.ColumnDefinitions>
+                                                                <!-- Exibe a versão -->
+                                                                <TextBlock Grid.Column="0" Padding="5" Text="{x:Bind Versao}" HorizontalAlignment="Center"/>
+                                                                <!-- Exibe a data da versão -->
+                                                                <TextBlock Grid.Column="1" Padding="5" Text="{x:Bind Data, Converter={StaticResource DateFormatConverter}}" HorizontalAlignment="Center" Margin="20,0,0,0" />
+                                                                <!-- Botão para editar a versão -->
+                                                                <Button Grid.Column="2" Padding="5" Content="Editar" Click="OnEditButtonClick" Tag="{x:Bind}" HorizontalAlignment="Center" Margin="50,0,0,0"/>                                                                
+                                                                <!-- Botão para excluir a versão -->
+                                                                <Button Grid.Column="3" Padding="5" Content="Copiar" Click="OnCopiarButtonClick" Tag="{x:Bind}" HorizontalAlignment="Center" Margin="80,0,0,0"/>
+                                                                <!-- Botão para excluir a versão -->
+                                                                <Button Grid.Column="4" Padding="5" Content="Excluir" Click="ExcluirVersao_Click" Tag="{x:Bind}" HorizontalAlignment="Center" Margin="100,0,0,0"/>
+                                                            </Grid>
+                                                        </DataTemplate>
+                                                    </muxc:Expander.HeaderTemplate>
+                                                    <!-- Conteúdo do Expander da versão -->
+                                                    <StackPanel>
+                                                        <!-- Títulos das colunas -->
+                                                        <Grid Margin="0,0,0,5" Padding="10" Background="#E5E5E5" CornerRadius="4">
+                                                            <Grid.ColumnDefinitions>
+                                                                <ColumnDefinition Width="2*" />
+                                                                <ColumnDefinition Width="1*" />
+                                                                <ColumnDefinition Width="1*" />
+                                                            </Grid.ColumnDefinitions>
+                                                            <!-- Títulos -->
+                                                            <TextBlock Grid.Column="0" Text="Nome do Insumo" FontWeight="Bold" />
+                                                            <TextBlock Grid.Column="1" Text="Código Interno" FontWeight="Bold" />
+                                                            <TextBlock Grid.Column="2" Text="Quantidade" FontWeight="Bold" />
+                                                        </Grid>
+                                                        <!-- Lista de insumos da versão -->
+                                                        <ItemsRepeater ItemsSource="{x:Bind Itens}">
+                                                            <ItemsRepeater.ItemTemplate>
+                                                                <DataTemplate x:DataType="models:ItemModel">
+                                                                    <Grid Margin="0,5,0,0" Padding="10" Background="#F9F9F9" CornerRadius="4">
+                                                                        <Grid.ColumnDefinitions>
+                                                                            <ColumnDefinition Width="2*" />
+                                                                            <ColumnDefinition Width="1*" />
+                                                                            <ColumnDefinition Width="1*" />
+                                                                        </Grid.ColumnDefinitions>
+                                                                        <!-- Nome do insumo -->                                      
+                                                                        <TextBlock Grid.Column="0" Text="{x:Bind Nome}" />
+                                                                        <TextBlock Grid.Column="1" Text="{x:Bind CodigoInterno}" />
+                                                                        <TextBlock Grid.Column="2">
+                                                                                <Run Text="{x:Bind Quantidade}" />
+                                                                                <Run Text=" " />
+                                                                                <Run Text="{x:Bind UnidadeMedida}" />
+                                                                        </TextBlock>
+                                                                    </Grid>
+                                                                </DataTemplate>
+                                                            </ItemsRepeater.ItemTemplate>
+                                                        </ItemsRepeater>
+                                                    </StackPanel>
+                                                </muxc:Expander>
                                             </DataTemplate>
                                         </ItemsRepeater.ItemTemplate>
                                     </ItemsRepeater>

@@ -19,6 +19,10 @@ namespace PeDJRMWinUI3UNO.Models
         // Propriedade para armazenar os insumos relacionados à versão
         [System.ComponentModel.DataAnnotations.Schema.NotMapped] // Ignora o mapeamento no banco de dados
         public ObservableCollection<ReceitasInsumosModel> Insumos { get; set; } = new ObservableCollection<ReceitasInsumosModel>();
+               
+        // Propriedade para armazenar os itens da versão
+        [System.ComponentModel.DataAnnotations.Schema.NotMapped] // Ignorado pelo EF
+        public ObservableCollection<ItemModel> Itens { get; set; } = new ObservableCollection<ItemModel>();
 
     }
 }

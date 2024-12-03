@@ -173,6 +173,11 @@ namespace PeDJRMWinUI3UNO.Data
                 entity.Property(f => f.Nome).HasColumnName("nome");
                 entity.Property(f => f.Codigo_Interno).HasColumnName("codigo_interno");
             });
+
+            modelBuilder.Entity<ItemModel>(builder =>
+            {
+                builder.HasNoKey(); // Define ItemModel como sem chave primária
+            });
         }
     }
 }
