@@ -18,19 +18,19 @@ namespace PeDJRMWinUI3UNO.Services
         }
 
         // Método para obter todos os insumos
-        public Task<List<InsumosModel>> ObterTodosAsync()
+        public Task<List<InsumoModel>> ObterTodosAsync()
         {
             return _insumosRepository.ObterTodosAsync();
         }
 
         // Método para encontrar um insumo pelo ID
-        public Task<InsumosModel> FindAsync(int id)
+        public Task<InsumoModel> FindAsync(int id)
         {
             return _insumosRepository.FindAsync(id);
         }
 
         // Método para salvar um novo insumo com validação
-        public async Task<bool> SalvarAsync(InsumosModel insumo)
+        public async Task<bool> SalvarAsync(InsumoModel insumo)
         {
             // Validação básica antes de salvar
             if (string.IsNullOrWhiteSpace(insumo.Nome) || insumo.Custo <= 0 || insumo.IdTipoIngrediente <= 0)
@@ -42,7 +42,7 @@ namespace PeDJRMWinUI3UNO.Services
         }
 
         // Método para atualizar um insumo existente com validação
-        public async Task<bool> AtualizarAsync(InsumosModel insumo)
+        public async Task<bool> AtualizarAsync(InsumoModel insumo)
         {
             // Validação básica antes de atualizar
             if (insumo.Id_Insumo == 0 || string.IsNullOrWhiteSpace(insumo.Nome) || insumo.Custo <= 0 || insumo.IdTipoIngrediente <= 0)

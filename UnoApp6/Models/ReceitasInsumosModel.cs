@@ -22,6 +22,9 @@ namespace PeDJRMWinUI3UNO.Models
         // Chave estrangeira para tbl_flavorizantes (campo id), opcional
         public int? Id_Flavorizante { get; set; }
 
+        // Chave estrangeira para tbl_flavorizantes_Interno, opcional
+        public int? Id_Flavorizante_Interno { get; set; }
+
         // Chave estrangeira para tbl_insumos (campo id)
         public int? Id_Insumo { get; set; }
 
@@ -29,7 +32,7 @@ namespace PeDJRMWinUI3UNO.Models
         public VersoesReceitasModel? VersaoReceita { get; set; }
 
         // Propriedade de navegação para o insumo
-        public InsumosModel? Insumo { get; set; }
+        public InsumoModel? Insumo { get; set; }
 
         // Propriedade de navegação para o flavorizante
         public FlavorizantesModel? Flavorizante { get; set; }

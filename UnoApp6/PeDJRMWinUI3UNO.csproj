@@ -56,8 +56,12 @@
     <None Remove="Presentation\TipoIngrediente.xaml" />
     <None Remove="Resources\Colors.xaml" />
     <None Remove="Resources\Styles.xaml" />
+    <None Remove="Views\Cadastros\ComponentesAromaticosView.xaml" />
     <None Remove="Views\Cadastros\FlavorizantesView.xaml" />
     <None Remove="Views\Cadastros\InsumosView.xaml" />
+    <None Remove="Views\Cadastros\Receita\FlavorizantesInternosView.xaml" />
+    <None Remove="Views\Cadastros\Receita\FlavorizanteView.xaml" />
+    <None Remove="Views\Cadastros\Receita\FormulaFlavorizantePage.xaml" />
     <None Remove="Views\Cadastros\Receita\ReceitasView.xaml" />
     <None Remove="Views\HomePage.xaml" />
 
@@ -170,6 +174,26 @@
   </ItemGroup>
   <ItemGroup>
     <AdditionalFiles Remove="Views\Cadastros\Receita\ReceitasView.xaml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Page Update="Views\Cadastros\ComponentesAromaticosView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Update="Views\Cadastros\Receita\FormulaFlavorizantePage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Update="Views\Cadastros\Receita\FlavorizanteView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Update="Views\Cadastros\Receita\FlavorizantesInternosView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <PropertyGroup>
     <OutputType>WinExe</OutputType>

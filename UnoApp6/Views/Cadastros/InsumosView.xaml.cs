@@ -2,6 +2,7 @@ using System.Collections.ObjectModel;
 using Microsoft.Extensions.DependencyInjection;
 using PeDJRMWinUI3UNO.Services;
 
+
 namespace PeDJRMWinUI3UNO.Views.Cadastros;
 
 public sealed partial class InsumosView : Page
@@ -10,11 +11,11 @@ public sealed partial class InsumosView : Page
     private readonly TipoIngredienteService _tipoIngredienteService;
     private readonly FornecedorService _fornecedorService;
 
-    private InsumosModel insumoEmEdicao;
+    private InsumoModel insumoEmEdicao;
 
     public ObservableCollection<TipoIngredienteModel> TipoIngredientes { get; set; } = new ObservableCollection<TipoIngredienteModel>();
     public ObservableCollection<FornecedorModel> Fornecedores { get; set; } = new ObservableCollection<FornecedorModel>();
-    public ObservableCollection<InsumosModel> Insumos { get; set; } = new ObservableCollection<InsumosModel>();
+    public ObservableCollection<InsumoModel> Insumos { get; set; } = new ObservableCollection<InsumoModel>();
 
     public InsumosView()
     {
@@ -67,7 +68,7 @@ public sealed partial class InsumosView : Page
         FornecedorComboBox.ItemsSource = Fornecedores;
 
         // Recria a coleção de insumos
-        Insumos = new ObservableCollection<InsumosModel>(await _insumosService.ObterTodosAsync());
+        Insumos = new ObservableCollection<InsumoModel>(await _insumosService.ObterTodosAsync());
         InsumoDataGrid.ItemsSource = Insumos;
     }
 
@@ -141,7 +142,7 @@ public sealed partial class InsumosView : Page
             if (novoRegistro)
             {
                 // Criando novo registro
-                insumoEmEdicao = new InsumosModel
+                insumoEmEdicao = new InsumoModel
                 {
                     Id_Insumo = await _insumosService.ObterProximoIdAsync(),
                     Codigo_Interno = CodigoInternoTextBox.Text
@@ -197,7 +198,7 @@ public sealed partial class InsumosView : Page
                     }
 
                     // Recria a coleção e redefine a origem de dados do DataGrid
-                    Insumos = new ObservableCollection<InsumosModel>(Insumos);
+                    Insumos = new ObservableCollection<InsumoModel>(Insumos);
                     InsumoDataGrid.ItemsSource = Insumos;
                 }
             }
@@ -220,7 +221,7 @@ public sealed partial class InsumosView : Page
     private void EditarInsumo_Click(object sender, RoutedEventArgs e)
     {
         var button = sender as Button;
-        var insumo = button?.Tag as InsumosModel;
+        var insumo = button?.Tag as InsumoModel;
 
         if (insumo != null)
         {

@@ -22,6 +22,8 @@
                 <muxc:NavigationViewItem Icon="Home" Content="Home" Tag="HomePage"/>
                 <muxc:NavigationViewItem Icon="Contact" Content="Cadastros" Tag="CadastroPage"/>
                 <muxc:NavigationViewItem Icon="Library" Content="Receitas" Tag="ReceitasView"/>
+                <muxc:NavigationViewItem Icon="Library" Content="Flavorizantes Internos" Tag="FormulasFlavorizantesView"/>
+
             </muxc:NavigationView.MenuItems>
 
             <!-- Local para exibir o conteúdo da página selecionada -->

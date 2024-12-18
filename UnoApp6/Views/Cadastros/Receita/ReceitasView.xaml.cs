@@ -1,12 +1,7 @@
-using Microsoft.UI.Xaml.Controls;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Threading.Tasks;
-using PeDJRMWinUI3UNO.Models;
 using PeDJRMWinUI3UNO.Services;
 using Microsoft.Extensions.DependencyInjection;
 using System.Diagnostics;
-using System;
 
 namespace PeDJRMWinUI3UNO.Views.Cadastros.Receita;
 
@@ -27,9 +22,9 @@ public sealed partial class ReceitasView : Page
     public ReceitasView()
     {
         // Inicializa os componentes da página
-        this.InitializeComponent();
+        InitializeComponent();
         // Define o DataContext para esta classe
-        this.DataContext = this;
+        DataContext = this;
 
         // Obtém o serviço de receitas do contêiner de injeção de dependência
         _receitasService = App.Services.GetService<ReceitasService>()

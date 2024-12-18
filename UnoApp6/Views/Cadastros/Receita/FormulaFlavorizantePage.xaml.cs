@@ -8,11 +8,18 @@ using LiveChartsCore.SkiaSharpView;
 using LiveChartsCore.SkiaSharpView.Painting;
 using SkiaSharp;
 
-namespace PeDJRMWinUI3UNO.Views.Cadastros.Receita;
 
-/// Classe para representar a página de receitas.
-/// Implementa INotifyPropertyChanged para permitir atualizações na interface.
-public sealed partial class ReceitaPage : Page, INotifyPropertyChanged
+
+
+using SkiaSharp;
+
+// The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
+
+namespace PeDJRMWinUI3UNO.Views.Cadastros.Receita;
+/// <summary>
+/// An empty page that can be used on its own or navigated to within a Frame.
+/// </summary>
+public sealed partial class FormulaFlavorizantePage : Page
 {
     // Evento para notificar mudanças nas propriedades.
     // Inicializado com um delegate vazio para evitar nulidade.
@@ -26,12 +33,13 @@ public sealed partial class ReceitaPage : Page, INotifyPropertyChanged
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
 
-    // Serviços injetados para manipular receitas e insumos.
+    // Serviços injetados para manipular formulas e insumos.
     private readonly InsumosService _insumoService;
-    private readonly FlavorizantesService _flavorizanteService;    
-    private readonly ReceitasService _receitasService;
-    private readonly VersoesReceitasService _versoesReceitasService;
-    private readonly ReceitasInsumosService _receitasInsumosService;
+    private readonly FlavorizantesService _flavorizanteService;
+    private readonly ComponenteAromaticoService _componenteAromaticoService;
+    private readonly FormulaFlavorizanteService _formulaFlavorizanteService;
+    private readonly VersoesFormulaFlavorizanteService _versoesFormulaFlavorizanteService;
+    private readonly FormulaFlavorizanteInsumosService _formulaFlavorizanteInsumosService;
 
     /// Coleção de séries para exibição no gráfico de pizza.
     public ObservableCollection<ISeries> PieSeries { get; set; } = new ObservableCollection<ISeries>();
@@ -39,19 +47,21 @@ public sealed partial class ReceitaPage : Page, INotifyPropertyChanged
     // Coleções para armazenar dados de insumos, flavorizantes, receitas, etc.
     public ObservableCollection<InsumoModel> Insumos { get; set; } = new ObservableCollection<InsumoModel>();
     public ObservableCollection<FlavorizantesModel> Flavorizantes { get; set; } = new ObservableCollection<FlavorizantesModel>();
-    public ObservableCollection<ReceitasModel> Receitas { get; set; } = new ObservableCollection<ReceitasModel>();
-    public ObservableCollection<VersoesReceitasModel> VersoesReceitas { get; set; } = new ObservableCollection<VersoesReceitasModel>();
-    public ObservableCollection<ReceitasInsumosModel> ReceitasInsumos { get; set; } = new ObservableCollection<ReceitasInsumosModel>();
+    public ObservableCollection<FormulaFlavorizanteModel> Formulas { get; set; } = new ObservableCollection<FormulaFlavorizanteModel>();
+    public ObservableCollection<VersoesFormulaFlavorizanteModel> VersoesFormulas { get; set; } = new ObservableCollection<VersoesFormulaFlavorizanteModel>();
+    public ObservableCollection<FormulaFlavorizanteInsumosModel> FormulasInsumos { get; set; } = new ObservableCollection<FormulaFlavorizanteInsumosModel>();
+    public ObservableCollection<ComponenteAromaticoModel> ComponentesAromaticos{ get; set; } = new ObservableCollection<ComponenteAromaticoModel>();
+
 
     // Coleções para os itens da receita e itens disponíveis.
-    public ObservableCollection<ItemModel> ItensReceita { get; set; } = new ObservableCollection<ItemModel>();
+    public ObservableCollection<ItemModel> ItensFormula { get; set; } = new ObservableCollection<ItemModel>();
     public ObservableCollection<ItemModel> ItensDisponiveis { get; set; } = new ObservableCollection<ItemModel>();
 
-    private bool _isNewReceita = true; // Define como novo por padrão
+    private bool _isNewFormula = true; // Define como novo por padrão
 
     /// Construtor da classe ReceitaPage.
     /// Configura os serviços injetados e inicializa os dados.
-    public ReceitaPage()
+    public FormulaFlavorizantePage()
     {
         this.InitializeComponent();
         this.DataContext = this; // Configura o DataContext para a própria página.
@@ -61,13 +71,15 @@ public sealed partial class ReceitaPage : Page, INotifyPropertyChanged
             ?? throw new InvalidOperationException("O serviço InsumosService não foi encontrado no contêiner de injeção de dependência.");
         _flavorizanteService = App.Services.GetService(typeof(FlavorizantesService)) as FlavorizantesService
             ?? throw new InvalidOperationException("O serviço FlavorizantesService não foi encontrado no contêiner de injeção de dependência.");
-        _receitasService = App.Services.GetService(typeof(ReceitasService)) as ReceitasService
+        _componenteAromaticoService = App.Services.GetService(typeof(ComponenteAromaticoService)) as ComponenteAromaticoService
             ?? throw new InvalidOperationException("O serviço ReceitasService não foi encontrado no contêiner de injeção de dependência.");
-        _versoesReceitasService = App.Services.GetService(typeof(VersoesReceitasService)) as VersoesReceitasService
+        _formulaFlavorizanteService = App.Services.GetService(typeof(FormulaFlavorizanteService)) as FormulaFlavorizanteService
             ?? throw new InvalidOperationException("O serviço VersoesReceitasService não foi encontrado no contêiner de injeção de dependência.");
-        _receitasInsumosService = App.Services.GetService(typeof(ReceitasInsumosService)) as ReceitasInsumosService
+        _versoesFormulaFlavorizanteService = App.Services.GetService(typeof(VersoesFormulaFlavorizanteService)) as VersoesFormulaFlavorizanteService
             ?? throw new InvalidOperationException("O serviço ReceitasInsumosService não foi encontrado no contêiner de injeção de dependência.");
-               
+        _formulaFlavorizanteInsumosService = App.Services.GetService(typeof(FormulaFlavorizanteInsumosService)) as FormulaFlavorizanteInsumosService
+            ?? throw new InvalidOperationException("O serviço ReceitasInsumosService não foi encontrado no contêiner de injeção de dependência.");
+
         // Carrega os itens disponíveis e inicializa a lista.
         _ = CarregarItensDisponiveisAsync();
         AdicionarLinhaVazia();
@@ -79,15 +91,15 @@ public sealed partial class ReceitaPage : Page, INotifyPropertyChanged
 
         try
         {
-            if (e.Parameter is ReceitasModel receitaParaCopia)
+            if (e.Parameter is FormulaFlavorizanteModel formulaParaCopia)
             {
                 // Trata a cópia da receita
-                await CriarNovaReceitaBaseadaEmCopiaAsync(receitaParaCopia);
+                await CriarNovaFormulaBaseadaEmCopiaAsync(formulaParaCopia);
             }
-            else if (e.Parameter is VersoesReceitasModel versaoParaEdicao)
+            else if (e.Parameter is VersoesFormulaFlavorizanteModel versaoParaEdicao)
             {
                 // Trata a edição de uma versão existente
-                await CarregarDadosReceitaAsync(versaoParaEdicao);
+                await CarregarDadosFormulaAsync(versaoParaEdicao);
             }
             else
             {
@@ -105,61 +117,61 @@ public sealed partial class ReceitaPage : Page, INotifyPropertyChanged
     /// Carrega os dados da receita e preenche a interface para edição.
     /// </summary>
     /// <param name="versaoSelecionada">A versão da receita selecionada.</param>
-    private async Task CarregarDadosReceitaAsync(VersoesReceitasModel versaoSelecionada)
+    private async Task CarregarDadosFormulaAsync(VersoesFormulaFlavorizanteModel versaoSelecionada)
     {
         // Define que não estamos criando uma nova receita.
-        _isNewReceita = false;
+        _isNewFormula = false;
 
         // Obtém os dados da receita associados à versão selecionada.
-        var receita = await _receitasService.ObterReceitaPorIdAsync(versaoSelecionada.Id_Receita);
+        var formula = await _formulaFlavorizanteService.ObterPorIdAsync(versaoSelecionada.Id_Formula_Flavorizante);
 
-        if (receita == null)
+        if (formula == null)
         {
-            Debug.WriteLine("Receita não encontrada.");
+            Debug.WriteLine("Formula não encontrada.");
             return;
         }
 
         // Preenche os campos da interface com os dados da receita.
-        CodigoReceitaTextBox.Text = receita.Codigo_Receita;
-        NomeReceitaTextBox.Text = receita.Nome_Receita;
-        DescricaoReceitaTextBox.Text = versaoSelecionada.Descricao_Processo;
-        DataReceitaPicker.Date = versaoSelecionada.Data;
+        CodigoFormulaTextBox.Text = formula.Codigo_Flavorizante;
+        NomeFormulaTextBox.Text = formula.Nome_Flavorizante;
+        DescricaoFormulaTextBox.Text = versaoSelecionada.Descricao_Processo;
+        DataFormulaPicker.Date = versaoSelecionada.Data;
 
         // Obtém os itens da receita.
-        var itensReceita = await _receitasInsumosService.ObterPorVersaoReceitaIdAsync(versaoSelecionada.Id);
+        var itensFormula = await _formulaFlavorizanteInsumosService.ObterPorVersaoFormulaIdAsync(versaoSelecionada.Id);
 
         // Preenche os itens na interface.
-        PreencherItensReceita(itensReceita);
+        PreencherItensFormula(itensFormula);
     }
 
     /// <summary>
-    /// Cria uma nova receita baseada em uma cópia existente.
+    /// Cria uma nova Formula baseada em uma cópia existente.
     /// </summary>
-    /// <param name="receita">A receita a ser copiada.</param>
-    private async Task CriarNovaReceitaBaseadaEmCopiaAsync(ReceitasModel receita)
+    /// <param name="receita">A Formula a ser copiada.</param>
+    private async Task CriarNovaFormulaBaseadaEmCopiaAsync(FormulaFlavorizanteModel formula)
     {
-        // Define que estamos criando uma nova receita.
-        _isNewReceita = true;
+        // Define que estamos criando uma nova Formula.
+        _isNewFormula = true;
 
-        // Gera um novo código para a receita copiada.
-        CodigoReceitaTextBox.Text = await GerarCodigoReceitaAsync();
+        // Gera um novo código para a Formula copiada.
+        CodigoFormulaTextBox.Text = await GerarCodigoFormulaFlavorizanteAsync();
 
-        // Preenche os campos com os dados da receita copiada.
-        NomeReceitaTextBox.Text = string.Empty; // Limpa o nome para que o usuário insira um novo.
-        DescricaoReceitaTextBox.Text = string.Empty; // Limpa a descrição para uma nova entrada.
-        DataReceitaPicker.Date = DateTimeOffset.Now; // Define a data atual.
+        // Preenche os campos com os dados da Formula copiada.
+        NomeFormulaTextBox.Text = string.Empty; // Limpa o nome para que o usuário insira um novo.
+        DescricaoFormulaTextBox.Text = string.Empty; // Limpa a descrição para uma nova entrada.
+        DataFormulaPicker.Date = DateTimeOffset.Now; // Define a data atual.
 
-        // Obtém a última versão da receita copiada.
-        var ultimaVersao = (await _versoesReceitasService.ObterPorReceitaIdAsync(receita.Id))
+        // Obtém a última versão da Formula copiada.
+        var ultimaVersao = (await _versoesFormulaFlavorizanteService.ObterPorFormulaIdAsync(formula.Id))
             .OrderByDescending(v => v.Versao)
             .FirstOrDefault();
 
         if (ultimaVersao != null)
         {
-            var itensReceita = await _receitasInsumosService.ObterPorVersaoReceitaIdAsync(ultimaVersao.Id);
+            var itensFormula = await _formulaFlavorizanteInsumosService.ObterPorVersaoFormulaIdAsync(ultimaVersao.Id);
 
             // Preenche os itens na interface.
-            PreencherItensReceita(itensReceita);
+            PreencherItensFormula(itensFormula);
         }
         else
         {
@@ -168,33 +180,32 @@ public sealed partial class ReceitaPage : Page, INotifyPropertyChanged
     }
 
     /// <summary>
-    /// Preenche os itens da receita na interface.
+    /// Preenche os itens da Formula na interface.
     /// </summary>
-    /// <param name="itensReceita">A lista de itens da receita.</param>
-    private void PreencherItensReceita(IEnumerable<ReceitasInsumosModel> itensReceita)
+    /// <param name="itensFormula">A lista de itens da Formula.</param>
+    private void PreencherItensFormula(IEnumerable<FormulaFlavorizanteInsumosModel> itensFormula)
     {
         // Limpa a lista de itens antes de adicionar os novos dados.
-        ItensReceita.Clear();
+        ItensFormula.Clear();
 
         // Calcula a soma total das quantidades para o cálculo das porcentagens.
-        decimal somaQuantidades = itensReceita.Sum(item => item.Quantidade);
+        decimal somaQuantidades = itensFormula.Sum(item => item.Quantidade);
 
         // Itera sobre os itens retornados e os adiciona à interface.
-        foreach (var item in itensReceita)
+        foreach (var item in itensFormula)
         {
             decimal porcentagem = somaQuantidades > 0
                 ? Math.Round((item.Quantidade / somaQuantidades) * 100, 3)
                 : 0;
 
-            ItensReceita.Add(new ItemModel
+            ItensFormula.Add(new ItemModel
             {
-                Nome = item.Insumo?.Nome ?? item.Flavorizante?.Nome ?? string.Empty,
-                CodigoInterno = item.Insumo?.Codigo_Interno ?? item.Flavorizante?.Codigo_Interno ?? string.Empty,
+                Nome = item.Insumo?.Nome ?? item.ComponenteAromatico.Nome ?? string.Empty,
+                CodigoInterno = item.Insumo?.Codigo_Interno ?? item.ComponenteAromatico.CodigoInterno ?? string.Empty,
                 Quantidade = item.Quantidade,
                 UnidadeMedida = item.Unidade_Medida,
-                Idinsumo = item.Id_Insumo ?? 0,
-                Idflavorizante = item.Id_Flavorizante ?? 0,
-                IdflavorizanteInterno = item.Id_Flavorizante_Interno ?? 0,
+                Idinsumo = item.Id_Insumo,
+                idcar = item.Id_Car,                
                 Porcentagem = porcentagem
             });
         }
@@ -202,7 +213,7 @@ public sealed partial class ReceitaPage : Page, INotifyPropertyChanged
         // Define o item selecionado no ComboBox de unidade de medida.
         UnidadeMedidaComboBox.SelectedItem = UnidadeMedidaComboBox.Items
             .OfType<ComboBoxItem>()
-            .FirstOrDefault(i => i.Content?.ToString() == ItensReceita.FirstOrDefault()?.UnidadeMedida);
+            .FirstOrDefault(i => i.Content?.ToString() == ItensFormula.FirstOrDefault()?.UnidadeMedida);
 
         // Atualiza o gráfico com os dados carregados.
         AtualizarGrafico();
@@ -210,102 +221,102 @@ public sealed partial class ReceitaPage : Page, INotifyPropertyChanged
 
 
 
-    private async void SalvarReceita_Click(object sender, RoutedEventArgs e)
+    private async void SalvarFormula_Click(object sender, RoutedEventArgs e)
     {
-        await SalvarReceitaAsync();
+        await SalvarFormulaAsync();
     }
 
-    /// Método responsável por salvar a receita.
-    /// Ao editar, cria uma nova versão. Ao criar, adiciona uma nova receita.
-    private async Task SalvarReceitaAsync()
+    /// Método responsável por salvar a Formula.
+    /// Ao editar, cria uma nova versão. Ao criar, adiciona uma nova Formula.
+    private async Task SalvarFormulaAsync()
     {
         try
         {
-            // Verifica se o nome da receita foi preenchido.
-            if (string.IsNullOrWhiteSpace(NomeReceitaTextBox.Text))
+            // Verifica se o nome da Formula foi preenchido.
+            if (string.IsNullOrWhiteSpace(NomeFormulaTextBox.Text))
             {
-                await MostrarDialogoAviso("O nome da receita é obrigatório.");
+                await MostrarDialogoAviso("O nome da formula é obrigatório.");
                 return;
             }
 
-            // Preenche o modelo da receita com os dados da interface.
-            var receita = new ReceitasModel
+            // Preenche o modelo da Formula com os dados da interface.
+            var formula = new FormulaFlavorizanteModel
             {
-                Codigo_Receita = CodigoReceitaTextBox.Text, // Código da receita.
-                Nome_Receita = NomeReceitaTextBox.Text, // Nome da receita.
-                Data = DataReceitaPicker.Date.DateTime, // Data da receita.
-                Descricao_Processo = DescricaoReceitaTextBox.Text // Descrição do processo.
+                Codigo_Flavorizante = CodigoFormulaTextBox.Text, // Código da Formula.
+                Nome_Flavorizante = NomeFormulaTextBox.Text, // Nome da Formula.
+                Data = DataFormulaPicker.Date.DateTime, // Data da Formula.
+                Descricao_Processo = DescricaoFormulaTextBox.Text // Descrição do processo.
             };
 
-            // Verifica se estamos editando uma receita existente ou criando uma nova.
-            var receitaExistente = await _receitasService.ObterReceitaPorCodigoAsync(receita.Codigo_Receita);
+            // Verifica se estamos editando uma formula existente ou criando uma nova.
+            var formulaExistente = await _formulaFlavorizanteService.ObterFormulaPorCodigoAsync(formula.Codigo_Flavorizante);
 
-            if (receitaExistente != null)
+            if (formulaExistente != null)
             {
-                // **Editar receita existente (nova versão)**
-                await CriarNovaVersaoAsync(receitaExistente.Id);
+                // **Editar formula existente (nova versão)**
+                await CriarNovaVersaoAsync(formulaExistente.Id);
             }
             else
             {
-                // **Criar nova receita**
-                var receitaId = await _receitasService.AdicionarReceitaAsync(receita);
+                // **Criar nova formula**
+                var formulaId = await _formulaFlavorizanteService.AdicionarFormulaAsync(formula);
 
-                // Após criar uma nova receita, cria a primeira versão.
-                await CriarNovaVersaoAsync(receitaId);
+                // Após criar uma nova formula, cria a primeira versão.
+                await CriarNovaVersaoAsync(formulaId);
             }
 
             // Exibe mensagem de sucesso e limpa os campos.
-            await MostrarDialogoAviso("Receita salva com sucesso!");
+            await MostrarDialogoAviso("Formula salva com sucesso!");
             LimparCampos();
 
-            // Navega de volta para a página ReceitasView.
-            Frame.Navigate(typeof(ReceitasView));
+            // Navega de volta para a página FormulaFlavorizanteView.
+            Frame.Navigate(typeof(FormulaFlavorizanteView));
         }
         catch (Exception ex)
         {
             // Captura erros e exibe uma mensagem ao usuário.
-            await MostrarDialogoAviso($"Erro ao salvar a receita: {ex.Message}");
+            await MostrarDialogoAviso($"Erro ao salvar a formula: {ex.Message}");
         }
     }
 
     /// Cria uma nova versão para uma receita existente.
-    /// <param name="receitaId">O ID da receita.</param>
-    private async Task CriarNovaVersaoAsync(int receitaId)
+    /// <param name="formulaId">O ID da receita.</param>
+    private async Task CriarNovaVersaoAsync(int formulaId)
     {
         try
         {
             // Obtém o número da última versão associada à receita.
-            var ultimasVersoes = await _versoesReceitasService.ObterPorReceitaIdAsync(receitaId);
+            var ultimasVersoes = await _versoesFormulaFlavorizanteService.ObterPorFormulaIdAsync(formulaId);
             var novaVersaoNumero = (ultimasVersoes.Max(v => (int?)v.Versao) ?? 0) + 1;
 
             // Cria uma nova versão da receita.
-            var versaoReceita = new VersoesReceitasModel
+            var versaoformula = new VersoesFormulaFlavorizanteModel
             {
-                Id_Receita = receitaId, // Relaciona a versão à receita.
+                Id = formulaId, // Relaciona a versão à receita.
                 Versao = novaVersaoNumero, // Define o número da nova versão.
                 Data = DateTime.Now, // Usa a data atual como data da versão.
-                Descricao_Processo = DescricaoReceitaTextBox.Text // Usa a descrição informada.
+                Descricao_Processo = DescricaoFormulaTextBox.Text // Usa a descrição informada.
             };
 
             // Adiciona a nova versão ao banco.
-            var versaoReceitaId = await _versoesReceitasService.AdicionarVersaoReceitaAsync(versaoReceita);
+            var versaoFormulaId = await _versoesFormulaFlavorizanteService.AdicionarVersaoAsync(versaoformula);
 
             // Associa os insumos à nova versão.
-            foreach (var item in ItensReceita.Where(i => !string.IsNullOrEmpty(i.Nome)))
+            foreach (var item in ItensFormula.Where(i => !string.IsNullOrEmpty(i.Nome)))
             {
-                var receitaInsumo = new ReceitasInsumosModel
+                var receitaInsumo = new FormulaFlavorizanteInsumosModel
                 {
-                    Id_Versao_Receita = versaoReceitaId, // Relaciona ao ID da nova versão.
+                    Id_Versao_Formula_Flavorizante = versaoFormulaId, // Relaciona ao ID da nova versão.
                     Id_Insumo = item.Idinsumo, // ID do insumo.
                     Unidade_Medida = item.UnidadeMedida, // Unidade de medida.
                     Quantidade = item.Quantidade, // Quantidade.
-                    Id_Flavorizante = item.Idflavorizante, // ID do flavorizante.
-                    Id_Flavorizante_Interno = item.IdflavorizanteInterno // ID do flavorizante interno.
+                    Id_Car = item.Idflavorizante, // ID do flavorizante.
+                    
                 };
                 Debug.WriteLine($"Erro ao criar nova versão: {item.Quantidade}");
 
                 // Salva o insumo no banco de dados.
-                await _receitasInsumosService.AdicionarReceitaInsumoAsync(receitaInsumo);
+                await _formulaFlavorizanteInsumosService.AdicionarAsync(receitaInsumo);
             }
         }
         catch (Exception ex)
@@ -328,27 +339,27 @@ public sealed partial class ReceitaPage : Page, INotifyPropertyChanged
     private async void LimparCampos()
     {
         // Limpa os campos de texto e reseta os controles
-        NomeReceitaTextBox.Text = string.Empty;
-        DescricaoReceitaTextBox.Text = string.Empty;
-        DataReceitaPicker.Date = DateTimeOffset.Now;
+        NomeFormulaTextBox.Text = string.Empty;
+        DescricaoFormulaTextBox.Text = string.Empty;
+        DataFormulaPicker.Date = DateTimeOffset.Now;
 
         // Gera um novo código para a receita
-        CodigoReceitaTextBox.Text = await GerarCodigoReceitaAsync();
+        CodigoFormulaTextBox.Text = await GerarCodigoFormulaFlavorizanteAsync();
 
         // Limpa a lista de itens e adiciona uma linha vazia
-        ItensReceita.Clear();
+        ItensFormula.Clear();
         AdicionarLinhaVazia();
 
         // Reseta o valor do peso total da amostra
         pesoTotalAmostra = 0;
     }
 
-    public async Task<string> GerarCodigoReceitaAsync()
+    public async Task<string> GerarCodigoFormulaFlavorizanteAsync()
     {
         int proximoId;
         try
         {
-            proximoId = await _receitasService.ObterProximoIdReceitaAsync();
+            proximoId = await _formulaFlavorizanteService.ObterProximoIdFormulaAsync();
         }
         catch (Exception ex)
         {
@@ -364,10 +375,10 @@ public sealed partial class ReceitaPage : Page, INotifyPropertyChanged
 
         var diaDoAno = DateTime.Now.DayOfYear.ToString("000");
         var anoCorrente = (DateTime.Now.Year % 100).ToString("00");
-        var codigoReceita = $"{diaDoAno}-{anoCorrente}-{proximoId:00}";
+        var codigoFormula = $"{diaDoAno}-{anoCorrente}-{proximoId:00}";
 
-        Debug.WriteLine($"Código gerado: {codigoReceita}");
-        return codigoReceita;
+        Debug.WriteLine($"Código gerado: {codigoFormula}");
+        return codigoFormula;
     }
 
     private void AtualizarGrafico()
@@ -376,7 +387,7 @@ public sealed partial class ReceitaPage : Page, INotifyPropertyChanged
         PieSeries.Clear();
 
         // Adiciona os itens da receita ao gráfico
-        foreach (var item in ItensReceita.Where(i => !string.IsNullOrWhiteSpace(i.Nome)))
+        foreach (var item in ItensFormula.Where(i => !string.IsNullOrWhiteSpace(i.Nome)))
         {
             PieSeries.Add(new PieSeries<double>
             {
@@ -396,34 +407,34 @@ public sealed partial class ReceitaPage : Page, INotifyPropertyChanged
 
 
 
-    private async void ReceitaPage_Loaded(object sender, RoutedEventArgs e)
+    private async void FormulaFlavorizantePage_Loaded(object sender, RoutedEventArgs e)
     {
         Debug.WriteLine($"Itens disponíveis: {ItensDisponiveis.Count}");
-if (_isNewReceita)
-    {
-        Debug.WriteLine($"Itens disponíveis: {ItensDisponiveis.Count}");
+        if (_isNewFormula)
+        {
+            Debug.WriteLine($"Itens disponíveis: {ItensDisponiveis.Count}");
 
-        // Gerar o código da receita ao carregar a página
-        CodigoReceitaTextBox.Text = await GerarCodigoReceitaAsync();
+            // Gerar o código da receita ao carregar a página
+            CodigoFormulaTextBox.Text = await GerarCodigoFormulaFlavorizanteAsync();
 
-        // Converte a lista para ObservableCollection<ISeries>
-        PieSeries = new ObservableCollection<ISeries>(
-            ItensReceita.Select(item => new PieSeries<double>
-            {
-                Values = new double[] { (double)item.Quantidade },
-                Name = item.Nome
-            })
-        );
+            // Converte a lista para ObservableCollection<ISeries>
+            PieSeries = new ObservableCollection<ISeries>(
+                ItensFormula.Select(item => new PieSeries<double>
+                {
+                    Values = new double[] { (double)item.Quantidade },
+                    Name = item.Nome
+                })
+            );
 
-        OnPropertyChanged(nameof(PieSeries));
-    }
+            OnPropertyChanged(nameof(PieSeries));
+        }
     }
 
     private void ReceitaListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
     {
         if (ReceitaListView.SelectedItem is ItemModel selectedItem)
         {
-            int index = ItensReceita.IndexOf(selectedItem);
+            int index = ItensFormula.IndexOf(selectedItem);
             Debug.WriteLine($"Índice do item selecionado: {index}");
         }
     }
@@ -461,7 +472,7 @@ if (_isNewReceita)
 
     private void AtualizarUnidadeMedidaNasLinhas()
     {
-        foreach (var item in ItensReceita)
+        foreach (var item in ItensFormula)
         {
             item.UnidadeMedida = UnidadeMedida;
         }
@@ -495,13 +506,13 @@ if (_isNewReceita)
             if (sender is TextBox textBox && textBox.DataContext is ItemModel currentItem)
             {
                 // Localiza a posição atual na coleção
-                var currentIndex = ItensReceita.IndexOf(currentItem);
+                var currentIndex = ItensFormula.IndexOf(currentItem);
 
                 // Verifica se há uma próxima linha
-                if (currentIndex >= 0 && currentIndex < ItensReceita.Count - 1)
+                if (currentIndex >= 0 && currentIndex < ItensFormula.Count - 1)
                 {
                     // Obtém o próximo item
-                    var nextItem = ItensReceita[currentIndex + 1];
+                    var nextItem = ItensFormula[currentIndex + 1];
 
                     // Localiza o próximo TextBox correspondente (manualmente associado)
                     var nextContainer = FindVisualChild<TextBox>(ReceitaListView, currentIndex + 1, "QuantidadeTextBox");
@@ -554,7 +565,21 @@ if (_isNewReceita)
                 Idflavorizante = flavorizante.Id_Flavorizante
             });
         }
-                
+
+        // Carregar componentes Aromaticos
+        var componentesAromaticos = await _componenteAromaticoService.ObterTodosAsync();
+        foreach (var componenteAromatico in componentesAromaticos)
+        {
+            ItensDisponiveis.Add(new ItemModel
+            {
+               
+                CodigoInterno = componenteAromatico.CodigoInterno,
+                Nome = componenteAromatico.Nome,
+                idcar = componenteAromatico.Id
+            });
+            Debug.WriteLine($"Itens disponíveis carregados");
+        }
+
         // Atualizar layout no UI thread
         DispatcherQueue.TryEnqueue(() =>
         {
@@ -566,7 +591,7 @@ if (_isNewReceita)
 
     private void AdicionarLinhaVazia()
     {
-        var ultimaLinha = ItensReceita.LastOrDefault();
+        var ultimaLinha = ItensFormula.LastOrDefault();
         if (ultimaLinha != null && string.IsNullOrEmpty(ultimaLinha.Nome))
         {
             Debug.WriteLine("A última linha já está vazia. Não será criada uma nova linha.");
@@ -582,7 +607,7 @@ if (_isNewReceita)
             UnidadeMedida = string.Empty,
             Porcentagem = 0
         };
-        ItensReceita.Add(novaLinha);
+        ItensFormula.Add(novaLinha);
 
         Debug.WriteLine("Nova linha vazia adicionada.");
 
@@ -643,7 +668,7 @@ if (_isNewReceita)
         }
 
         // Verifica se a última linha está vazia antes de adicionar outra
-        var ultimaLinha = ItensReceita.LastOrDefault();
+        var ultimaLinha = ItensFormula.LastOrDefault();
         if (ultimaLinha != null && string.IsNullOrEmpty(ultimaLinha.Nome))
         {
             Debug.WriteLine("Linha vazia já existe. Não será adicionada uma nova linha.");
@@ -654,7 +679,7 @@ if (_isNewReceita)
         AdicionarLinhaVazia();
 
         // Foco no AutoSuggestBox da nova linha
-        var novaLinha = ItensReceita.LastOrDefault();
+        var novaLinha = ItensFormula.LastOrDefault();
         if (novaLinha != null)
         {
             var container = ReceitaListView.ContainerFromItem(novaLinha) as ListViewItem;
@@ -701,7 +726,7 @@ if (_isNewReceita)
             const decimal totalPorcentagem = 100m; // Total de porcentagem (100%)
 
             // Obter todos os itens válidos (ignorando linhas sem nome)
-            var itensValidos = ItensReceita.Where(item => !string.IsNullOrEmpty(item.Nome)).ToList();
+            var itensValidos = ItensFormula.Where(item => !string.IsNullOrEmpty(item.Nome)).ToList();
 
             // Verificar se o item atual está nos itens válidos
             if (!itensValidos.Contains(currentItem))
@@ -807,7 +832,7 @@ if (_isNewReceita)
     private void AtualizarPorcentagens()
     {
         // Obtém apenas os itens válidos (ignorando linhas sem nome).
-        var itensValidos = ItensReceita.Where(item => !string.IsNullOrEmpty(item.Nome)).ToList();
+        var itensValidos = ItensFormula.Where(item => !string.IsNullOrEmpty(item.Nome)).ToList();
 
         // Calcula o total de quantidades de todos os itens válidos.
         decimal totalQuantidade = itensValidos.Sum(item => item.Quantidade);
@@ -875,7 +900,7 @@ if (_isNewReceita)
     // Sobrecarga para compatibilidade com chamadas antigas
     private void AtualizarQuantidades()
     {
-        AtualizarQuantidades(ItensReceita.Where(item => !string.IsNullOrEmpty(item.Nome)));
+        AtualizarQuantidades(ItensFormula.Where(item => !string.IsNullOrEmpty(item.Nome)));
     }
 
     private void TextBox_GotFocus(object sender, RoutedEventArgs e)
@@ -903,35 +928,3 @@ if (_isNewReceita)
         await dialog.ShowAsync();
     }
 }
-
-public static class UIElementExtensions
-{
-    /// Encontra um descendente de um tipo específico no elemento visual.
-    /// </summary>
-    /// <typeparam name="T">O tipo do elemento descendente a ser encontrado.</typeparam>
-    /// <param name="element">O elemento raiz onde a busca começará.</param>
-    /// <param name="predicate">Uma função opcional para filtrar o descendente desejado.</param>
-    /// <returns>O primeiro descendente do tipo especificado que atende ao predicado, ou null se nenhum for encontrado.</returns>
-    public static T? FindDescendant<T>(this DependencyObject element, Func<T, bool>? predicate = null) where T : DependencyObject
-    {
-        if (element == null) return null;
-
-        for (int i = 0; i < VisualTreeHelper.GetChildrenCount(element); i++)
-        {
-            var child = VisualTreeHelper.GetChild(element, i);
-            if (child is T descendant && (predicate == null || predicate(descendant)))
-            {
-                return descendant;
-            }
-
-            var result = FindDescendant<T>(child, predicate);
-            if (result != null)
-            {
-                return result;
-            }
-        }
-
-        return null;
-    }
-}
-

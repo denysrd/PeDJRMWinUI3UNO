@@ -13,6 +13,8 @@ public class ItemModel : INotifyPropertyChanged
     private decimal _porcentagem;
     private int _idinsumo;
     private int _idflavorizante;
+    private int _idflavorizanteInterno;
+    private int _idcar;
 
     // Construtor para inicializar os campos
     public ItemModel()
@@ -24,6 +26,8 @@ public class ItemModel : INotifyPropertyChanged
         _porcentagem = 0; // Inicializa com 0
         _idinsumo = 0; // Inicializa com 0
         _idflavorizante = 0; // Inicializa com 0
+        _idflavorizanteInterno = 0; // Inicializa com 0
+        _idcar = 0; // Inicializa com 0
     }
 
     // Propriedades públicas
@@ -93,6 +97,26 @@ public class ItemModel : INotifyPropertyChanged
         set
         {
             _idflavorizante = value;
+            OnPropertyChanged();
+        }
+    }
+
+    public int IdflavorizanteInterno
+    {
+        get => _idflavorizanteInterno;
+        set
+        {
+            _idflavorizanteInterno = value;
+            OnPropertyChanged();
+        }
+    }
+
+    public int idcar
+    {
+        get => _idcar;
+        set
+        {
+            _idcar = value;
             OnPropertyChanged();
         }
     }

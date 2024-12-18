@@ -22,39 +22,39 @@ namespace PeDJRMWinUI3UNO.Repositories
         {
             using (var context = new AppDbContext(_dbContextOptions))
             {
-                var ultimoInsumo = await context.InsumosModel.OrderByDescending(i => i.Id_Insumo).FirstOrDefaultAsync();
+                var ultimoInsumo = await context.InsumoModel.OrderByDescending(i => i.Id_Insumo).FirstOrDefaultAsync();
                 return ultimoInsumo?.Id_Insumo + 1 ?? 1; // Se não houver registros, começa com 1
             }
         }
 
         // Método para obter todos os insumos
-        public async Task<List<InsumosModel>> ObterTodosAsync()
+        public async Task<List<InsumoModel>> ObterTodosAsync()
         {
             try
             {
                 using (var context = new AppDbContext(_dbContextOptions))
             {
-                return await context.InsumosModel.ToListAsync();
+                return await context.InsumoModel.ToListAsync();
             }
             }
             catch (Exception ex)
             {
                 Debug.WriteLine($"Erro ao obter insumos: {ex.Message}");
-                return new List<InsumosModel>();
+                return new List<InsumoModel>();
             }
         }
 
         // Método para encontrar um insumo pelo ID
-        public async Task<InsumosModel> FindAsync(int idInsumo)
+        public async Task<InsumoModel> FindAsync(int idInsumo)
         {
             using (var context = new AppDbContext(_dbContextOptions))
             {
-                return await context.InsumosModel.FindAsync(idInsumo);
+                return await context.InsumoModel.FindAsync(idInsumo);
             }
         }
 
         // Método para salvar um novo insumo
-        public async Task<bool> SalvarAsync(InsumosModel insumo)
+        public async Task<bool> SalvarAsync(InsumoModel insumo)
         {
             using (var context = new AppDbContext(_dbContextOptions))
             {
@@ -63,21 +63,21 @@ namespace PeDJRMWinUI3UNO.Repositories
                     insumo.Id_Insumo = 0; // Ignora o ID existente ao salvar um novo insumo
                 }
 
-                context.InsumosModel.Add(insumo);
+                context.InsumoModel.Add(insumo);
                 return await context.SaveChangesAsync() > 0;
             }
         }
 
 
         // Método para atualizar um insumo existente com verificação de concorrência
-        public async Task<bool> AtualizarAsync(InsumosModel insumo)
+        public async Task<bool> AtualizarAsync(InsumoModel insumo)
         {
             using (var context = new AppDbContext(_dbContextOptions))
             {
                 try
                 {
                     // Verifica se o insumo existe no banco de dados antes de atualizar
-                    var insumoExistente = await context.InsumosModel.AsNoTracking().FirstOrDefaultAsync(i => i.Id_Insumo == insumo.Id_Insumo);
+                    var insumoExistente = await context.InsumoModel.AsNoTracking().FirstOrDefaultAsync(i => i.Id_Insumo == insumo.Id_Insumo);
 
                     if (insumoExistente == null)
                     {
@@ -104,10 +104,10 @@ namespace PeDJRMWinUI3UNO.Repositories
         {
             using (var context = new AppDbContext(_dbContextOptions))
             {
-                var insumo = await context.InsumosModel.FindAsync(id);
+                var insumo = await context.InsumoModel.FindAsync(id);
                 if (insumo != null)
                 {
-                    context.InsumosModel.Remove(insumo);
+                    context.InsumoModel.Remove(insumo);
                     return await context.SaveChangesAsync() > 0;
                 }
                 return false;

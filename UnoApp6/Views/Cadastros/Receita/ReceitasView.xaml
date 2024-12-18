@@ -129,14 +129,14 @@
                                                         <!-- Títulos das colunas -->
                                                         <Grid Margin="0,0,0,5" Padding="10" Background="#E5E5E5" CornerRadius="4">
                                                             <Grid.ColumnDefinitions>
-                                                                <ColumnDefinition Width="2*" />
+                                                                <ColumnDefinition Width="1*" />
                                                                 <ColumnDefinition Width="1*" />
                                                                 <ColumnDefinition Width="1*" />
                                                             </Grid.ColumnDefinitions>
                                                             <!-- Títulos -->
-                                                            <TextBlock Grid.Column="0" Text="Nome do Insumo" FontWeight="Bold" />
-                                                            <TextBlock Grid.Column="1" Text="Código Interno" FontWeight="Bold" />
-                                                            <TextBlock Grid.Column="2" Text="Quantidade" FontWeight="Bold" />
+                                                            <TextBlock Grid.Column="0" Text="Código Interno" FontWeight="Bold" HorizontalAlignment="Center"/>
+                                                            <TextBlock Grid.Column="1" Text="Nome do Insumo" FontWeight="Bold" HorizontalAlignment="Center"/>
+                                                            <TextBlock Grid.Column="2" Text="Quantidade" FontWeight="Bold" HorizontalAlignment="Center" />
                                                         </Grid>
                                                         <!-- Lista de insumos da versão -->
                                                         <ItemsRepeater ItemsSource="{x:Bind Itens}">
@@ -144,14 +144,14 @@
                                                                 <DataTemplate x:DataType="models:ItemModel">
                                                                     <Grid Margin="0,5,0,0" Padding="10" Background="#F9F9F9" CornerRadius="4">
                                                                         <Grid.ColumnDefinitions>
-                                                                            <ColumnDefinition Width="2*" />
+                                                                            <ColumnDefinition Width="1*" />
                                                                             <ColumnDefinition Width="1*" />
                                                                             <ColumnDefinition Width="1*" />
                                                                         </Grid.ColumnDefinitions>
-                                                                        <!-- Nome do insumo -->                                      
-                                                                        <TextBlock Grid.Column="0" Text="{x:Bind Nome}" />
-                                                                        <TextBlock Grid.Column="1" Text="{x:Bind CodigoInterno}" />
-                                                                        <TextBlock Grid.Column="2">
+                                                                        <!-- Nome do insumo -->
+                                                                        <TextBlock Grid.Column="0" Text="{x:Bind CodigoInterno}" HorizontalAlignment="Center"/>
+                                                                        <TextBlock Grid.Column="1" Text="{x:Bind Nome}" HorizontalAlignment="Center"/>
+                                                                        <TextBlock Grid.Column="2" HorizontalAlignment="Center">
                                                                                 <Run Text="{x:Bind Quantidade}" />
                                                                                 <Run Text=" " />
                                                                                 <Run Text="{x:Bind UnidadeMedida}" />

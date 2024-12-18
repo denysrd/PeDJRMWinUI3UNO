@@ -6,7 +6,7 @@ using KeyAttribute = System.ComponentModel.DataAnnotations.KeyAttribute;
 namespace PeDJRMWinUI3UNO.Models
 {
     [Table("tbl_insumo")]
-    public class InsumosModel
+    public class InsumoModel
     {
         [Key]
         public int Id_Insumo { get; set; }

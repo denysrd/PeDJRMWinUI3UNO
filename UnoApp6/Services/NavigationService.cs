@@ -23,7 +23,7 @@ namespace PeDJRMWinUI3UNO.Services
                 "HomePage" => typeof(HomePage),   // Agora usa HomePage em vez de MainPage
                 "CadastroPage" => typeof(CadastroPage),
                 "ReceitasView" => typeof(ReceitasView),
-                "FlavorizantesPage" => typeof(FlavorizantesView),              
+                "FormulasFlavorizantesView" => typeof(FormulaFlavorizanteView),                
                 _ => null
             };
 

@@ -17,6 +17,11 @@ public sealed partial class CadastroPage : Page
         Frame.Navigate(typeof(InsumosView));
     }
 
+    private void NavigateToComponentesAromaticos(object sender, RoutedEventArgs e)
+    {
+        Frame.Navigate(typeof(ComponentesAromaticosView));
+    }    
+
     private void NavigateToFornecedores(object sender, RoutedEventArgs e)
     {
         Frame.Navigate(typeof(Fornecedor.FornecedorPage));

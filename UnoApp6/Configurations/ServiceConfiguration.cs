@@ -48,7 +48,7 @@ namespace PeDJRMWinUI3UNO.Configurations
             services.AddTransient<InsumosRepository>();
             services.AddTransient<FlavorizantesRepository>();
             services.AddTransient<ReceitasRepository>();
-
+            //services.AddTransient<FlavorizantesInternosRepository>();
             // Registro de serviços de negócios para serem usados nas Views e ViewModels
             services.AddTransient<FornecedorService>();
             services.AddTransient<TipoIngredienteService>();
@@ -56,12 +56,25 @@ namespace PeDJRMWinUI3UNO.Configurations
             services.AddTransient<InsumosService>();
             services.AddTransient<FlavorizantesService>();
             services.AddTransient<ReceitasService>();
-
+            //services.AddTransient<FlavorizantesInternosService>();
             services.AddTransient<IReceitasRepository, ReceitasRepository>();
             services.AddScoped<IVersoesReceitasRepository, VersoesReceitasRepository>(); // Registro do repositório
             services.AddScoped<VersoesReceitasService>(); // Registro do serviço
             services.AddScoped<IReceitasInsumosRepository, ReceitasInsumosRepository>(); // Registro do repositório
             services.AddScoped<ReceitasInsumosService>(); // Registro do serviço
+            services.AddTransient <FormulaFlavorizanteService>();
+            services.AddScoped<IFormulaFlavorizanteRepository, FormulaFlavorizanteRepository>(); // Registro do repositório
+            services.AddTransient<ComponenteAromaticoService>();
+            services.AddScoped<IComponenteAromaticoRepository, ComponenteAromaticoRepository>(); // Registro do repositório
+            services.AddTransient<FormulaFlavorizanteInsumosService>();
+            services.AddScoped<IFormulaFlavorizanteInsumosRepository, FormulaFlavorizanteInsumosRepository>(); // Registro do repositório
+            services.AddTransient<VersoesFormulaFlavorizanteService>();
+            services.AddScoped<IVersoesFormulaFlavorizanteRepository, VersoesFormulaFlavorizanteRepository>(); // Registro do repositório
+            services.AddScoped<ComponenteAromaticoService>();
+            services.AddScoped<TipoIngredienteService>();
+            services.AddScoped<FornecedorService>();
+            services.AddScoped<IComponenteAromaticoRepository, ComponenteAromaticoRepository>();
+
         }
     }
 }
