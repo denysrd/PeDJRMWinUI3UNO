@@ -9,6 +9,7 @@
     xmlns:lvc="using:LiveChartsCore.SkiaSharpView.WinUI"
     xmlns:models="using:PeDJRMWinUI3UNO.Models"
     mc:Ignorable="d"
+    Loaded="FormulaFlavorizantePage_Loaded"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
     <ScrollViewer VerticalScrollBarVisibility="Auto">
         <StackPanel>
@@ -164,18 +165,18 @@
 
                                 <!-- Label para "Peso Total Amostra" -->
                                 <TextBlock Grid.Column="1" 
-           Text="Peso Total Amostra:" 
-           FontWeight="Bold" 
-           HorizontalAlignment="Right"  
-           VerticalAlignment="Center" 
-           Margin="0,0,10,0" />
+                                       Text="Peso Total Amostra:" 
+                                       FontWeight="Bold" 
+                                       HorizontalAlignment="Right"  
+                                       VerticalAlignment="Center" 
+                                       Margin="0,0,10,0" />
 
                                 <!-- Campo com o valor do peso total -->
                                 <TextBlock Grid.Column="2" 
-           Text="{x:Bind pesoTotalAmostra, Mode=OneWay}" 
-           FontWeight="Bold" 
-           HorizontalAlignment="Center" 
-           VerticalAlignment="Center" />
+                                       Text="{x:Bind pesoTotalAmostra, Mode=OneWay}" 
+                                       FontWeight="Bold" 
+                                       HorizontalAlignment="Center" 
+                                       VerticalAlignment="Center" />
                             </Grid>
                         </StackPanel>
                     </StackPanel>

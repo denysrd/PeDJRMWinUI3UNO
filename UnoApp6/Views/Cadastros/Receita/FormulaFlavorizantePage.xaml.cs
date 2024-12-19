@@ -292,7 +292,7 @@ public sealed partial class FormulaFlavorizantePage : Page
             // Cria uma nova versão da receita.
             var versaoformula = new VersoesFormulaFlavorizanteModel
             {
-                Id = formulaId, // Relaciona a versão à receita.
+                Id_Formula_Flavorizante = formulaId, // Relaciona a versão à receita.
                 Versao = novaVersaoNumero, // Define o número da nova versão.
                 Data = DateTime.Now, // Usa a data atual como data da versão.
                 Descricao_Processo = DescricaoFormulaTextBox.Text // Usa a descrição informada.
@@ -310,7 +310,7 @@ public sealed partial class FormulaFlavorizantePage : Page
                     Id_Insumo = item.Idinsumo, // ID do insumo.
                     Unidade_Medida = item.UnidadeMedida, // Unidade de medida.
                     Quantidade = item.Quantidade, // Quantidade.
-                    Id_Car = item.Idflavorizante, // ID do flavorizante.
+                    Id_Car = item.Idflavorizante, // ID do CAR.
                     
                 };
                 Debug.WriteLine($"Erro ao criar nova versão: {item.Quantidade}");
@@ -576,8 +576,7 @@ public sealed partial class FormulaFlavorizantePage : Page
                 CodigoInterno = componenteAromatico.CodigoInterno,
                 Nome = componenteAromatico.Nome,
                 idcar = componenteAromatico.Id
-            });
-            Debug.WriteLine($"Itens disponíveis carregados");
+            });            
         }
 
         // Atualizar layout no UI thread
